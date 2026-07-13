@@ -1,0 +1,19 @@
+# python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# app data — local db + uploaded photos
+backend/data/
+backend/media/
+
+# secrets
+.env
+
+# os / editor
+.DS_Store
+.idea/

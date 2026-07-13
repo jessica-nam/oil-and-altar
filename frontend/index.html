@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Oil &amp; Altar — Photography by Bren</title>
+  <meta name="description" content="Oil &amp; Altar — light studies in the manner of the old masters. Photography by Bren." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div id="candle" aria-hidden="true"></div>
+<canvas id="grain" aria-hidden="true"></canvas>
+
+<nav aria-label="Site">
+  <a class="wordmark" href="#top">Oil <span class="amp">&amp;</span> Altar</a>
+  <ul>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<header id="top">
+  <div>
+    <p class="eyebrow hero-eyebrow">Photography · Bren</p>
+    <h1 class="hero-title">Oil<span class="amp">&amp;</span>Altar</h1>
+    <p class="hero-sub">Light studies in the manner of the old masters — devotion, shadow, and skin.</p>
+  </div>
+  <p class="scroll-cue">Enter</p>
+</header>
+
+<main>
+  <!-- Series sections are rendered here by app.js from GET /api/series -->
+  <div id="work"></div>
+
+  <section class="about" id="about">
+    <div class="reveal">
+      <p class="eyebrow">The photographer</p>
+      <h2>Bren shoots the way painters used to pray.</h2>
+      <p>Working almost entirely in available light and candlelight, Bren builds photographs the way an altarpiece is built — <strong>slowly, in layers, toward a single point of illumination</strong>. The work borrows its palette from oil painting: umber grounds, gilded highlights, oxblood shadows.</p>
+      <p>Prints are editioned in small runs and finished by hand. Commissions are open for portraiture, editorial, and album artwork.</p>
+      <p><a href="https://www.instagram.com/oilandaltar/" rel="noopener">Follow the work in progress on Instagram →</a></p>
+    </div>
+    <div class="portrait reveal">
+      <div class="frame"><canvas data-art="portrait" width="840" height="1050" role="img" aria-label="Placeholder portrait of the photographer in low candlelight"></canvas></div>
+    </div>
+  </section>
+
+  <section class="contact reveal" id="contact">
+    <p class="eyebrow">Commissions &amp; prints</p>
+    <h2>Sit for a portrait.</h2>
+    <p class="lede">Bookings open for portrait sittings, editorial work, and limited-edition prints.</p>
+
+    <form id="inquiry-form" novalidate>
+      <div class="field-row">
+        <label>
+          <span>Name</span>
+          <input type="text" name="name" required maxlength="200" autocomplete="name" />
+        </label>
+        <label>
+          <span>Email</span>
+          <input type="email" name="email" required autocomplete="email" />
+        </label>
+      </div>
+      <label>
+        <span>What are you dreaming of?</span>
+        <textarea name="message" rows="5" required maxlength="5000"></textarea>
+      </label>
+      <div class="form-actions">
+        <button type="submit">Send inquiry</button>
+        <p id="form-status" role="status" aria-live="polite"></p>
+      </div>
+    </form>
+
+    <div class="contact-links">
+      <a href="https://www.instagram.com/oilandaltar/" rel="noopener">Instagram</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>© 2026 Oil &amp; Altar</span>
+  <span>All photographs — Bren</span>
+</footer>
+
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Photograph viewer">
+  <div class="stage"><img alt="" /></div>
+  <div class="bar">
+    <span class="cap"></span>
+    <span class="idx"></span>
+  </div>
+  <button class="ctl prev" aria-label="Previous photograph">&#8249;</button>
+  <button class="ctl next" aria-label="Next photograph">&#8250;</button>
+  <button class="ctl close" aria-label="Close viewer">✕</button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
