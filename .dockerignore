@@ -1,0 +1,15 @@
+.git/
+.gitignore
+README.md
+.env
+.env.example
+backend/.venv/
+backend/data/
+backend/media/
+backend/tests/
+backend/.pytest_cache/
+backend/.ruff_cache/
+backend/.coverage
+**/__pycache__/
+**/*.pyc
+.DS_Store

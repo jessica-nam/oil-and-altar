@@ -16,7 +16,8 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import Depends, FastAPI, Header, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, Header, HTTPException, Request, UploadFile
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr, Field
 
@@ -78,6 +79,21 @@ async def lifespan(_: FastAPI):
 def create_app() -> FastAPI:
     app = FastAPI(title="Oil & Altar", lifespan=lifespan)
     db.init_db()
+
+    # In production, set OILANDALTAR_CANONICAL_HOST=oilandaltar.com so the www
+    # subdomain permanently redirects to the apex. Only the www alias is
+    # redirected — platform health checks hit the app by IP or internal host
+    # and must keep working.
+    canonical_host = os.environ.get("OILANDALTAR_CANONICAL_HOST")
+    if canonical_host:
+
+        @app.middleware("http")
+        async def redirect_www_to_apex(request: Request, call_next):
+            host = request.headers.get("host", "").split(":")[0]
+            if host == f"www.{canonical_host}":
+                url = request.url.replace(scheme="https", hostname=canonical_host, port=None)
+                return RedirectResponse(str(url), status_code=308)
+            return await call_next(request)
 
     @app.get("/api/health")
     def health() -> dict[str, str]:

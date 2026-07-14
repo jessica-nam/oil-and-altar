@@ -17,6 +17,20 @@ def client(tmp_path, monkeypatch):
         yield c
 
 
+def test_www_redirects_to_canonical_host(tmp_path, monkeypatch):
+    monkeypatch.setenv("OILANDALTAR_DB", str(tmp_path / "test.db"))
+    monkeypatch.setenv("OILANDALTAR_MEDIA_DIR", str(tmp_path / "media"))
+    monkeypatch.setenv("OILANDALTAR_CANONICAL_HOST", "oilandaltar.com")
+    with TestClient(create_app(), follow_redirects=False) as c:
+        res = c.get("/api/health", headers={"Host": "www.oilandaltar.com"})
+        assert res.status_code == 308
+        assert res.headers["location"] == "https://oilandaltar.com/api/health"
+
+        # the canonical host itself, and health-check hosts, are untouched
+        assert c.get("/api/health", headers={"Host": "oilandaltar.com"}).status_code == 200
+        assert c.get("/api/health").status_code == 200
+
+
 def test_health(client):
     res = client.get("/api/health")
     assert res.status_code == 200
