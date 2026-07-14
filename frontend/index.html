@@ -3,109 +3,39 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#060505" />
-  <meta name="description" content="Oil &amp; Altar — photography" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="description" content="Oil &amp; Altar — photography portfolio" />
   <title>Oil &amp; Altar</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Six+Caps&family=Space+Mono:wght@400;700&display=swap"
-    rel="stylesheet"
-  />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body id="top">
-  <!-- ambient layers -->
-  <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
-  <canvas id="grain" aria-hidden="true"></canvas>
-  <div id="flash" aria-hidden="true"></div>
-  <div id="veil" aria-hidden="true"></div>
-  <div id="filmstrip" aria-hidden="true"><div id="fs-gate"></div></div>
-  <span id="fs-counter" class="mono" aria-hidden="true"></span>
-
-  <header class="site-head mono">
-    <a class="wordmark" href="#top">OIL&amp;ALTAR</a>
-    <nav>
-      <a href="#index">INDEX</a>
-      <a href="#reels">REELS</a>
-      <a href="#contact">CONTACT</a>
+<body>
+  <!-- fixed corner block: wordmark + nav + socials (the site's identity) -->
+  <aside class="corner">
+    <a class="wordmark" href="#/">oilandaltar</a>
+    <nav id="nav">
+      <a href="#/bible-belt" data-route="bible-belt">Bible Belt</a>
+      <button type="button" class="nav-parent" id="pp-toggle" aria-expanded="false">
+        Photography Portfolio <span class="caret">&#9662;</span>
+      </button>
+      <div class="submenu" id="pp-menu">
+        <a href="#/abandoned-america" data-route="abandoned-america">Abandoned America</a>
+        <a href="#/portraits" data-route="portraits">Portraits</a>
+        <a href="#/everyday-exploration" data-route="everyday-exploration">Everyday Exploration</a>
+      </div>
+      <a href="#/films" data-route="films">Films &amp; Videography</a>
+      <a href="#/about" data-route="about">About</a>
     </nav>
-  </header>
+    <div class="social">
+      <a href="https://www.instagram.com/oilandaltar/" rel="noopener" target="_blank" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.2" cy="6.8" r="1.4" fill="currentColor"/></svg>
+      </a>
+      <a href="mailto:hello@oilandaltar.com" aria-label="Email">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><rect x="2" y="4.5" width="20" height="15" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 6l9 7 9-7" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      </a>
+    </div>
+  </aside>
 
-  <main>
-    <!-- ======================= HERO ======================= -->
-    <section class="hero" id="hero">
-      <div class="hero-sky" aria-hidden="true">
-        <div class="hero-lamp" id="hero-lamp"></div>
-        <div class="hero-horizon"></div>
-      </div>
-      <canvas id="motes" aria-hidden="true"></canvas>
-      <h1 class="hero-title" id="hero-title">
-        <span class="line">OIL</span>
-        <span class="line amp">&amp;</span>
-        <span class="line">ALTAR</span>
-      </h1>
-      <div class="hero-foot mono" aria-hidden="true">
-        <span>35MM</span>
-        <span class="crosses">&#8224; &#8224; &#8224;</span>
-        <span class="scroll-cue">SCROLL</span>
-      </div>
-    </section>
-
-    <div class="marquee" aria-hidden="true"><div class="marquee-track"></div></div>
-
-    <!-- ======================= GALLERY ======================= -->
-    <section class="series-wrap" id="index"><!-- built by app.js --></section>
-
-    <div class="marquee" aria-hidden="true"><div class="marquee-track"></div></div>
-
-    <!-- ======================= REELS ======================= -->
-    <section class="reels" id="reels">
-      <header class="sec-head">
-        <span class="mono sec-num">PROJECTION</span>
-        <h2 class="flap" data-text="REELS">REELS</h2>
-      </header>
-      <div class="bays" id="bays"><!-- built by app.js --></div>
-    </section>
-
-    <!-- ======================= CONTACT ======================= -->
-    <section class="contact" id="contact">
-      <header class="sec-head">
-        <span class="mono sec-num">&#8224;</span>
-        <h2 class="flap" data-text="INQUIRE">INQUIRE</h2>
-      </header>
-      <form id="inquiry-form" class="mono" novalidate>
-        <label>
-          <span>NAME</span>
-          <input name="name" type="text" required maxlength="200" autocomplete="name" />
-        </label>
-        <label>
-          <span>EMAIL</span>
-          <input name="email" type="email" required autocomplete="email" />
-        </label>
-        <label>
-          <span>MESSAGE</span>
-          <textarea name="message" rows="5" required maxlength="5000"></textarea>
-        </label>
-        <button type="submit">SEND</button>
-        <p id="form-status" role="status"></p>
-      </form>
-    </section>
-  </main>
-
-  <footer class="mono">
-    <a href="https://www.instagram.com/oilandaltar/" rel="noopener" target="_blank">@OILANDALTAR</a>
-    <span aria-hidden="true">&#8224;</span>
-  </footer>
-
-  <!-- ======================= LIGHTBOX ======================= -->
-  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
-    <button class="lb-btn lb-close" aria-label="Close">&times;</button>
-    <button class="lb-btn lb-prev" aria-label="Previous">&#8249;</button>
-    <button class="lb-btn lb-next" aria-label="Next">&#8250;</button>
-    <div class="lb-stage" id="lb-stage"></div>
-    <span class="lb-counter mono" id="lb-counter"></span>
-  </div>
+  <main id="view"><!-- rendered by app.js --></main>
 
   <script src="app.js"></script>
 </body>

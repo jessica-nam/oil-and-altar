@@ -41,11 +41,21 @@ def test_series_seeded(client):
     res = client.get("/api/series")
     assert res.status_code == 200
     series = res.json()
-    assert [s["slug"] for s in series] == ["series-i", "series-ii", "series-iii"]
-    assert [s["title"] for s in series] == ["Untitled I", "Untitled II", "Untitled III"]
+    assert [s["slug"] for s in series] == [
+        "bible-belt",
+        "abandoned-america",
+        "portraits",
+        "everyday-exploration",
+    ]
+    assert [s["title"] for s in series] == [
+        "Bible Belt",
+        "Abandoned America",
+        "Portraits",
+        "Everyday Exploration",
+    ]
     first = series[0]
     assert first["numeral"] == "I"
-    assert len(first["plates"]) == 5
+    assert len(first["plates"]) == 8
     assert first["plates"][0]["title"] == "Untitled 01"
     assert first["plates"][0]["image_url"] is None
 

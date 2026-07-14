@@ -43,14 +43,14 @@ CREATE TABLE IF NOT EXISTS inquiries (
 );
 """
 
-# Titles are deliberate placeholders — Bren picks the real series/plate names.
+# Bren's real project structure. Plate titles are placeholders he'll rename.
 # "kind" only drives the generative placeholder art style, it is never shown.
 SEED = [
     {
-        "slug": "series-i",
+        "slug": "bible-belt",
         "numeral": "I",
-        "title": "Untitled I",
-        "kind": "votive",
+        "title": "Bible Belt",
+        "kind": "nocturne",
         "blurb": "",
         "plates": [
             ("Untitled 01", "tall"),
@@ -58,33 +58,54 @@ SEED = [
             ("Untitled 03", "wide"),
             ("Untitled 04", ""),
             ("Untitled 05", "tall"),
+            ("Untitled 06", ""),
+            ("Untitled 07", "wide"),
+            ("Untitled 08", ""),
         ],
     },
     {
-        "slug": "series-ii",
+        "slug": "abandoned-america",
         "numeral": "II",
-        "title": "Untitled II",
+        "title": "Abandoned America",
+        "kind": "votive",
+        "blurb": "",
+        "plates": [
+            ("Untitled 09", "wide"),
+            ("Untitled 10", ""),
+            ("Untitled 11", "tall"),
+            ("Untitled 12", ""),
+            ("Untitled 13", "wide"),
+            ("Untitled 14", ""),
+        ],
+    },
+    {
+        "slug": "portraits",
+        "numeral": "III",
+        "title": "Portraits",
         "kind": "still",
         "blurb": "",
         "plates": [
-            ("Untitled 06", "wide"),
-            ("Untitled 07", ""),
-            ("Untitled 08", ""),
-            ("Untitled 09", "wide"),
+            ("Untitled 15", "tall"),
+            ("Untitled 16", ""),
+            ("Untitled 17", ""),
+            ("Untitled 18", "tall"),
+            ("Untitled 19", ""),
+            ("Untitled 20", ""),
         ],
     },
     {
-        "slug": "series-iii",
-        "numeral": "III",
-        "title": "Untitled III",
-        "kind": "nocturne",
+        "slug": "everyday-exploration",
+        "numeral": "IV",
+        "title": "Everyday Exploration",
+        "kind": "mixed",
         "blurb": "",
         "plates": [
-            ("Untitled 10", ""),
-            ("Untitled 11", "tall"),
-            ("Untitled 12", "wide"),
-            ("Untitled 13", ""),
-            ("Untitled 14", ""),
+            ("Untitled 21", ""),
+            ("Untitled 22", "wide"),
+            ("Untitled 23", ""),
+            ("Untitled 24", "tall"),
+            ("Untitled 25", ""),
+            ("Untitled 26", "wide"),
         ],
     },
 ]

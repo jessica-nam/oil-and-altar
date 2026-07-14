@@ -1,21 +1,28 @@
-/* Oil & Altar — frontend behavior.
- * Loads series/plates from GET /api/series; if the backend isn't running
- * (e.g. GitHub Pages or index.html opened as a file), falls back to embedded
- * seed data. Plates without an uploaded photo get a generative placeholder
- * painted in the language of the work: dusk skies, sodium streetlights,
- * cross silhouettes, hard flash reds and teals, film grain. */
+/* Oil & Altar — Swiss-minimal portfolio (after brandnewalias.com).
+ *
+ * Hash-routed single page:
+ *   #/                      landing — crossfade carousel (~40 images)
+ *   #/bible-belt            flagship project, single column
+ *   #/abandoned-america     |
+ *   #/portraits             | Photography Portfolio dropdown, 2-col grid
+ *   #/everyday-exploration  |
+ *   #/films                 stacked 16:9 video bays (mp4 slots)
+ *   #/about                 placeholder statement + inquiry form
+ *
+ * Data comes from GET /api/series; without a backend (GitHub Pages, file://)
+ * it falls back to the embedded seed. Plates without an uploaded photo get a
+ * generative placeholder painted in the language of the work. */
 (function () {
   "use strict";
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var touch = window.matchMedia("(hover: none)").matches;
 
-  /* Drop real mp4 paths here when Bren's reels are ready, e.g.
-   * ["/media/reel-1.mp4", "/media/reel-2.mp4", "/media/reel-3.mp4"].
-   * Empty slots show an animated static placeholder. */
+  /* Drop real mp4 paths here when the films are ready, e.g.
+   * ["/media/film-1.mp4", null, null]. Empty slots show static. */
   var REELS = [null, null, null];
 
-  var MARQUEE_WORDS = ["PORTRAIT", "NOCTURNE", "AMERICANA", "35MM", "FLASH", "DUSK", "SIGNS", "GRAIN"];
+  /* Carousel timing — per Bren's spec */
+  var DWELL_MIN = 1200, DWELL_MAX = 1800, CAROUSEL_COUNT = 40;
 
   /* ---------- seeded PRNG so placeholders render identically every load ---------- */
   function prng(seed) {
@@ -27,11 +34,11 @@
   }
 
   /* ================================================================
-   * generative placeholder plates
-   * three scene families matching the work:
-   *   nocturne — dusk gradient, building silhouettes, streetlight, cross
+   * generative placeholder painters (kept from the previous design):
+   *   nocturne — dusk sky, church silhouettes, streetlight, cross
    *   votive   — near-black interior, one hot amber source, god-rays
    *   still    — hard flash split-lit red/teal, dark subject mass
+   *   mixed    — one of the above, chosen by seed
    * ================================================================ */
 
   function grainPass(ctx, w, h, rnd, amt) {
@@ -65,7 +72,6 @@
   }
 
   function paintNocturne(ctx, w, h, rnd) {
-    // dusk sky
     var sky = ctx.createLinearGradient(0, 0, 0, h);
     sky.addColorStop(0, "#04050a");
     sky.addColorStop(0.45, "#101a2e");
@@ -76,7 +82,6 @@
 
     var horizon = h * (0.62 + rnd() * 0.18);
 
-    // streetlight orb + halo
     var lx = w * (0.15 + rnd() * 0.7), ly = horizon - h * (0.12 + rnd() * 0.3);
     var halo = ctx.createRadialGradient(lx, ly, 0, lx, ly, Math.min(w, h) * (0.3 + rnd() * 0.25));
     halo.addColorStop(0, "rgba(255,220,150,0.95)");
@@ -86,11 +91,9 @@
     ctx.fillStyle = halo;
     ctx.fillRect(0, 0, w, h);
 
-    // pole
     ctx.fillStyle = "rgba(4,3,2,0.9)";
     ctx.fillRect(lx - w * 0.004, ly, w * 0.008, horizon - ly + h * 0.1);
 
-    // telephone wires
     var wires = Math.floor(rnd() * 3);
     ctx.strokeStyle = "rgba(2,2,2,0.85)";
     ctx.lineWidth = Math.max(1, w * 0.002);
@@ -102,14 +105,12 @@
       ctx.stroke();
     }
 
-    // building silhouettes on the horizon
     ctx.fillStyle = "#040302";
     var x = 0;
     while (x < w) {
       var bw = w * (0.14 + rnd() * 0.3);
       var bh = h * (0.06 + rnd() * 0.22);
       ctx.fillRect(x, horizon - bh, bw + 1, bh);
-      // pitched roof sometimes — the church profile
       if (rnd() < 0.4) {
         ctx.beginPath();
         ctx.moveTo(x, horizon - bh);
@@ -117,7 +118,6 @@
         ctx.lineTo(x + bw, horizon - bh);
         ctx.fill();
       }
-      // a few lit windows
       var wins = Math.floor(rnd() * 3);
       for (var i = 0; i < wins; i++) {
         ctx.fillStyle = rnd() < 0.3 ? "rgba(160,220,240,0.85)" : "rgba(240,180,90,0.9)";
@@ -127,11 +127,9 @@
       x += bw + w * rnd() * 0.08;
     }
 
-    // ground
     ctx.fillStyle = "#050403";
     ctx.fillRect(0, horizon, w, h - horizon);
 
-    // cross silhouette against the sky
     if (rnd() < 0.5) {
       var cx = w * (0.2 + rnd() * 0.6), cy = horizon - h * (0.16 + rnd() * 0.2);
       var ch = h * (0.1 + rnd() * 0.12), cw = ch * 0.09;
@@ -145,7 +143,6 @@
     ctx.fillStyle = "#070503";
     ctx.fillRect(0, 0, w, h);
 
-    // one hot amber source — a window, a lamp, a flame
     var lx = w * (0.2 + rnd() * 0.6), ly = h * (0.18 + rnd() * 0.4);
     var r = Math.min(w, h) * (0.5 + rnd() * 0.3);
     var light = ctx.createRadialGradient(lx, ly, 0, lx, ly, r);
@@ -156,7 +153,6 @@
     ctx.fillStyle = light;
     ctx.fillRect(0, 0, w, h);
 
-    // god-rays
     ctx.globalCompositeOperation = "lighter";
     var rays = 3 + Math.floor(rnd() * 4);
     for (var i = 0; i < rays; i++) {
@@ -172,7 +168,6 @@
     }
     ctx.globalCompositeOperation = "source-over";
 
-    // dark furniture masses catching the edge of the light
     var forms = 3 + Math.floor(rnd() * 4);
     for (var f = 0; f < forms; f++) {
       var fx = w * (0.1 + rnd() * 0.8), fy = h * (0.45 + rnd() * 0.5);
@@ -192,7 +187,6 @@
     ctx.fillStyle = "#050304";
     ctx.fillRect(0, 0, w, h);
 
-    // hard flash split lighting — blood red vs flash teal from opposite corners
     var flip = rnd() < 0.5;
     var red = ctx.createRadialGradient(flip ? 0 : w, h * 0.2, 0, flip ? 0 : w, h * 0.2, w * (0.8 + rnd() * 0.4));
     red.addColorStop(0, "rgba(168,35,43,0.85)");
@@ -208,7 +202,6 @@
     ctx.fillStyle = teal;
     ctx.fillRect(0, 0, w, h);
 
-    // central dark subject mass with a rim light
     var sx = w * (0.35 + rnd() * 0.3), sy = h * (0.4 + rnd() * 0.3);
     var sr = Math.min(w, h) * (0.22 + rnd() * 0.18);
     var subj = ctx.createRadialGradient(sx - sr * 0.35, sy - sr * 0.35, sr * 0.1, sx, sy, sr);
@@ -227,7 +220,6 @@
     ctx.ellipse(sx, sy, sr * 0.8, sr * 0.95, rnd() * 0.4, -2.4, -0.9);
     ctx.stroke();
 
-    // flash hotspot
     var hx = w * (0.15 + rnd() * 0.7), hy = h * (0.1 + rnd() * 0.35);
     var hot = ctx.createRadialGradient(hx, hy, 0, hx, hy, Math.min(w, h) * 0.16);
     hot.addColorStop(0, "rgba(255,250,240,0.55)");
@@ -241,6 +233,10 @@
     var w = canvas.width, h = canvas.height;
     var ctx = canvas.getContext("2d");
     var rnd = prng(seed);
+    if (kind === "mixed") {
+      var r = rnd();
+      kind = r < 0.34 ? "votive" : r < 0.67 ? "still" : "nocturne";
+    }
     if (kind === "votive") paintVotive(ctx, w, h, rnd);
     else if (kind === "still") paintStill(ctx, w, h, rnd);
     else paintNocturne(ctx, w, h, rnd);
@@ -249,543 +245,177 @@
     grainPass(ctx, w, h, rnd, 22);
   }
 
-  /* ---------- fallback data (mirrors the backend seed) ----------
-   * Titles are deliberate placeholders — Bren picks the real names. */
-  var FALLBACK_SERIES = [
-    {
-      slug: "series-i", numeral: "I", title: "Untitled I", kind: "votive",
-      plates: [
-        { id: 1, title: "Untitled 01", shape: "tall", position: 1, image_url: null },
-        { id: 2, title: "Untitled 02", shape: "", position: 2, image_url: null },
-        { id: 3, title: "Untitled 03", shape: "wide", position: 3, image_url: null },
-        { id: 4, title: "Untitled 04", shape: "", position: 4, image_url: null },
-        { id: 5, title: "Untitled 05", shape: "tall", position: 5, image_url: null }
-      ]
-    },
-    {
-      slug: "series-ii", numeral: "II", title: "Untitled II", kind: "still",
-      plates: [
-        { id: 6, title: "Untitled 06", shape: "wide", position: 1, image_url: null },
-        { id: 7, title: "Untitled 07", shape: "", position: 2, image_url: null },
-        { id: 8, title: "Untitled 08", shape: "", position: 3, image_url: null },
-        { id: 9, title: "Untitled 09", shape: "wide", position: 4, image_url: null }
-      ]
-    },
-    {
-      slug: "series-iii", numeral: "III", title: "Untitled III", kind: "nocturne",
-      plates: [
-        { id: 10, title: "Untitled 10", shape: "", position: 1, image_url: null },
-        { id: 11, title: "Untitled 11", shape: "tall", position: 2, image_url: null },
-        { id: 12, title: "Untitled 12", shape: "wide", position: 3, image_url: null },
-        { id: 13, title: "Untitled 13", shape: "", position: 4, image_url: null },
-        { id: 14, title: "Untitled 14", shape: "", position: 5, image_url: null }
-      ]
-    }
-  ];
-
-  /* ================================================================
-   * ambient: film grain, cursor glow, camera flash
-   * ================================================================ */
-
-  function initGrain() {
-    var canvas = document.getElementById("grain");
-    var ctx = canvas.getContext("2d");
-    var tile = document.createElement("canvas");
-    tile.width = tile.height = 160;
-    var tctx = tile.getContext("2d");
-
-    function drawTile() {
-      var img = tctx.createImageData(160, 160);
-      var d = img.data;
-      for (var i = 0; i < d.length; i += 4) {
-        var v = Math.random() * 255;
-        d[i] = d[i + 1] = d[i + 2] = v;
-        d[i + 3] = 26;
-      }
-      tctx.putImageData(img, 0, 0);
-    }
-
-    function size() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    size();
-    window.addEventListener("resize", size);
-
-    function paint() {
-      drawTile();
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = ctx.createPattern(tile, "repeat");
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
-    paint();
-    if (!reduceMotion) setInterval(paint, 110);
-  }
-
-  function initCursorGlow() {
-    if (touch) return;
-    var glow = document.getElementById("cursor-glow");
-    var tx = window.innerWidth / 2, ty = window.innerHeight / 2;
-    var x = tx, y = ty;
-    document.addEventListener("pointermove", function (e) {
-      tx = e.clientX; ty = e.clientY;
-    });
-    (function loop() {
-      x += (tx - x) * 0.09;
-      y += (ty - y) * 0.09;
-      glow.style.transform = "translate3d(" + x + "px," + y + "px,0)";
-      requestAnimationFrame(loop);
-    })();
-  }
-
-  function cameraFlash() {
-    if (reduceMotion) return;
-    var el = document.getElementById("flash");
-    el.classList.remove("on");
-    void el.offsetWidth; // restart the animation
-    el.classList.add("on");
-  }
-
-  /* ================================================================
-   * hero: boot sequence — the streetlight powers on, then each letter
-   * of the sign catches with its own ignition flicker and settles
-   * into a slow idle flicker. Plus scroll parallax on the title.
-   * ================================================================ */
-
-  function initHero() {
-    var rnd = prng(20260713);
-    var lamp = document.getElementById("hero-lamp");
-    var chars = [];
-
-    document.querySelectorAll(".hero-title .line").forEach(function (line) {
-      if (line.classList.contains("amp")) return;
-      var text = line.textContent;
-      line.textContent = "";
-      for (var i = 0; i < text.length; i++) {
-        var ch = document.createElement("span");
-        ch.className = "ch";
-        ch.textContent = text[i];
-        line.appendChild(ch);
-        chars.push(ch);
-      }
-    });
-    var amp = document.querySelector(".hero-title .amp");
-
-    if (reduceMotion) {
-      lamp.classList.add("lit");
-      amp.classList.add("lit");
-      chars.forEach(function (ch) { ch.classList.add("lit"); });
-      return;
-    }
-
-    // 1. darkness … 2. streetlight ignites … 3. letters catch one by one
-    lamp.classList.add("dark");
-    setTimeout(function () {
-      lamp.classList.remove("dark");
-      lamp.classList.add("lit");
-    }, 450);
-
-    chars.forEach(function (ch) {
-      var idle = (4 + rnd() * 7).toFixed(2);
-      var idleDelay = (rnd() * 9).toFixed(2);
-      setTimeout(function () {
-        ch.classList.add("lit");
-        ch.style.animation =
-          "ignite 0.5s steps(1,end), flick " + idle + "s steps(1,end) " + idleDelay + "s infinite";
-      }, 700 + rnd() * 1300);
-    });
-    setTimeout(function () { amp.classList.add("lit"); }, 1500 + rnd() * 400);
-
-    // scroll parallax: title lines drift apart, footer strip fades
-    var lines = document.querySelectorAll(".hero-title .line");
-    var foot = document.querySelector(".hero-foot");
-    var speeds = [0.12, 0.24, 0.34];
-    var ticking = false;
-    window.addEventListener("scroll", function () {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(function () {
-        ticking = false;
-        var y = window.scrollY;
-        if (y > window.innerHeight * 1.2) return;
-        lines.forEach(function (line, i) {
-          line.style.transform = "translateY(" + (y * speeds[i]).toFixed(1) + "px)";
-        });
-        foot.style.opacity = Math.max(0, 1 - y / (window.innerHeight * 0.45));
-      });
-    }, { passive: true });
-  }
-
-  /* ================================================================
-   * dust motes drifting in the lamplight, stirred by the cursor
-   * ================================================================ */
-
-  function initMotes() {
-    if (reduceMotion || touch) return;
-    var hero = document.getElementById("hero");
-    var canvas = document.getElementById("motes");
-    var ctx = canvas.getContext("2d");
-    var rnd = prng(41);
-    var W, H, parts = [];
-    var px = -9999, py = -9999;
-    var visible = true;
-    var t = 0;
-
-    function size() {
-      W = canvas.width = hero.clientWidth;
-      H = canvas.height = hero.clientHeight;
-    }
-    size();
-    window.addEventListener("resize", size);
-
-    for (var i = 0; i < 110; i++) {
-      parts.push({
-        x: rnd() * 2000, y: rnd() * 2000,
-        vx: (rnd() - 0.5) * 0.18, vy: (rnd() - 0.5) * 0.12,
-        tw: 0.4 + rnd() * 2.2, ph: rnd() * 6.28, sz: 0.6 + rnd() * 1.6
-      });
-    }
-
-    hero.addEventListener("pointermove", function (e) {
-      var r = hero.getBoundingClientRect();
-      px = e.clientX - r.left; py = e.clientY - r.top;
-    });
-    hero.addEventListener("pointerleave", function () { px = py = -9999; });
-
-    new IntersectionObserver(function (entries) {
-      visible = entries[0].isIntersecting;
-    }, { threshold: 0 }).observe(hero);
-
-    // the lamp sits at 68% / 58% of the hero (matches the CSS)
-    (function loop() {
-      requestAnimationFrame(loop);
-      if (!visible) return;
-      t += 0.016;
-      ctx.clearRect(0, 0, W, H);
-      var lx = W * 0.68, ly = H * 0.58;
-      for (var i = 0; i < parts.length; i++) {
-        var p = parts[i];
-        // slow wind + a whisper of lift
-        p.vx += Math.sin(t * 0.3 + p.ph) * 0.0012;
-        p.vy -= 0.0006;
-        // the cursor stirs the dust
-        var dx = (p.x % W) - px, dy = (p.y % H) - py;
-        var d2 = dx * dx + dy * dy;
-        if (d2 < 16000) {
-          var f = 0.9 / (d2 + 60);
-          p.vx += dx * f; p.vy += dy * f;
-        }
-        p.vx *= 0.985; p.vy *= 0.985;
-        p.x += p.vx; p.y += p.vy;
-        var x = ((p.x % W) + W) % W, y = ((p.y % H) + H) % H;
-        // brighter near the lamp, twinkling
-        var ldx = x - lx, ldy = y - ly;
-        var near = Math.max(0, 1 - Math.sqrt(ldx * ldx + ldy * ldy) / (W * 0.5));
-        var a = (0.10 + 0.28 * near) * (0.55 + 0.45 * Math.sin(t * p.tw + p.ph));
-        if (a <= 0.01) continue;
-        ctx.fillStyle = "rgba(255, " + (200 + Math.round(40 * near)) + ", 150, " + a.toFixed(3) + ")";
-        ctx.beginPath();
-        ctx.arc(x, y, p.sz * (0.7 + near * 0.6), 0, 6.283);
-        ctx.fill();
-      }
-    })();
-  }
-
-  /* ================================================================
-   * magnetic nav links with glyph scramble on hover
-   * ================================================================ */
-
-  function initNav() {
-    if (touch) return;
-    document.querySelectorAll(".site-head nav a").forEach(function (link) {
-      var orig = link.textContent;
-      link.addEventListener("pointermove", function (e) {
-        var r = link.getBoundingClientRect();
-        var dx = e.clientX - (r.left + r.width / 2);
-        var dy = e.clientY - (r.top + r.height / 2);
-        link.style.transform = "translate(" + (dx * 0.28).toFixed(1) + "px," + (dy * 0.5).toFixed(1) + "px)";
-      });
-      link.addEventListener("pointerleave", function () {
-        link.style.transform = "";
-      });
-      if (reduceMotion) return;
-      var timer = null;
-      link.addEventListener("pointerenter", function () {
-        var tick = 0;
-        clearInterval(timer);
-        timer = setInterval(function () {
-          tick++;
-          var out = "";
-          for (var i = 0; i < orig.length; i++) {
-            out += i < tick - 1 ? orig[i] : GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
-          }
-          link.textContent = out;
-          if (tick - 1 >= orig.length) { link.textContent = orig; clearInterval(timer); }
-        }, 34);
-      });
-      link.addEventListener("pointerleave", function () {
-        clearInterval(timer);
-        link.textContent = orig;
-      });
-    });
-  }
-
-  /* ================================================================
-   * filmstrip scroll indicator — the page is a roll of 36 exposures
-   * ================================================================ */
-
-  function initFilmstrip() {
-    var gate = document.getElementById("fs-gate");
-    var counter = document.getElementById("fs-counter");
-    var ticking = false;
-    function update() {
-      ticking = false;
-      var max = document.documentElement.scrollHeight - window.innerHeight;
-      var p = max > 0 ? Math.min(1, window.scrollY / max) : 0;
-      gate.style.top = (p * (window.innerHeight - 46)).toFixed(1) + "px";
-      var fr = 1 + Math.round(p * 35);
-      counter.textContent = (fr < 10 ? "0" : "") + fr + " / 36";
-    }
-    window.addEventListener("scroll", function () {
-      if (!ticking) { ticking = true; requestAnimationFrame(update); }
-    }, { passive: true });
-    window.addEventListener("resize", update);
-    update();
-  }
-
-  /* ================================================================
-   * marquee ticker
-   * ================================================================ */
-
-  function initMarquees() {
-    document.querySelectorAll(".marquee-track").forEach(function (track) {
-      var parts = [];
-      for (var r = 0; r < 4; r++) {
-        MARQUEE_WORDS.forEach(function (w) {
-          parts.push("<span>" + w + "</span><span class=\"cross\">&#8224;</span>");
-        });
-      }
-      // duplicated once more so translateX(-50%) loops seamlessly
-      track.innerHTML = parts.join("") + parts.join("");
-    });
-  }
-
-  /* ================================================================
-   * split-flap section headers (church letterboard)
-   * ================================================================ */
-
-  var GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789†&";
-
-  function splitFlap(el) {
-    var finalText = el.dataset.text || el.textContent;
-    if (reduceMotion) { el.textContent = finalText; return; }
-    var settled = 0;
-    var tick = 0;
-    el.textContent = "";
-    var timer = setInterval(function () {
-      tick++;
-      if (tick % 3 === 0) settled++;
-      var out = "";
-      for (var i = 0; i < finalText.length; i++) {
-        if (i < settled || finalText[i] === " ") out += finalText[i];
-        else out += GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
-      }
-      el.textContent = out;
-      if (settled >= finalText.length) {
-        el.textContent = finalText;
-        clearInterval(timer);
-      }
-    }, 42);
-  }
-
-  function observeFlaps() {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        io.unobserve(entry.target);
-        splitFlap(entry.target);
-      });
-    }, { threshold: 0.4 });
-    document.querySelectorAll(".flap").forEach(function (el) {
-      if (!reduceMotion) el.textContent = "";
-      io.observe(el);
-    });
-  }
-
-  /* ================================================================
-   * gallery
-   * ================================================================ */
-
-  var lbItems = []; // {el (canvas|img), title}
-
   function plateSize(shape) {
     if (shape === "wide") return { w: 1400, h: 850 };
     if (shape === "tall") return { w: 800, h: 1150 };
-    return { w: 800, h: 1000 };
+    return { w: 900, h: 1000 };
   }
 
-  function buildSeries(seriesList) {
-    var wrap = document.getElementById("index");
-    wrap.innerHTML = "";
-    lbItems = [];
-    var frame = 0;
-
-    seriesList.forEach(function (s, sIdx) {
-      var section = document.createElement("section");
-      section.className = "series";
-
-      var head = document.createElement("header");
-      head.className = "sec-head";
-      var num = document.createElement("span");
-      num.className = "mono sec-num";
-      num.textContent = "SIGN " + s.numeral;
-      var h2 = document.createElement("h2");
-      h2.className = "flap";
-      h2.dataset.text = s.title.toUpperCase();
-      h2.textContent = s.title.toUpperCase();
-      head.appendChild(num);
-      head.appendChild(h2);
-      section.appendChild(head);
-
-      var grid = document.createElement("div");
-      grid.className = "grid";
-
-      s.plates.forEach(function (p, i) {
-        var fig = document.createElement("figure");
-        fig.className = "plate" + (p.shape ? " " + p.shape : "");
-        fig.style.setProperty("--d", (i % 8) * 80 + "ms");
-
-        var media;
-        if (p.image_url) {
-          media = document.createElement("img");
-          media.src = p.image_url;
-          media.alt = p.title;
-          media.loading = "lazy";
-        } else {
-          media = document.createElement("canvas");
-          var size = plateSize(p.shape);
-          media.width = size.w;
-          media.height = size.h;
-          paintPlate(media, p.id * 7919 + sIdx * 131, s.kind);
-        }
-
-        var tilt = document.createElement("div");
-        tilt.className = "tilt";
-        tilt.appendChild(media);
-
-        var torch = document.createElement("div");
-        torch.className = "torch";
-        tilt.appendChild(torch);
-        fig.appendChild(tilt);
-
-        frame++;
-        var no = document.createElement("span");
-        no.className = "frame-no mono";
-        no.textContent = (frame < 10 ? "0" : "") + frame;
-        fig.appendChild(no);
-
-        if (!touch) {
-          fig.addEventListener("pointermove", function (e) {
-            var r = fig.getBoundingClientRect();
-            var nx = (e.clientX - r.left) / r.width;
-            var ny = (e.clientY - r.top) / r.height;
-            fig.style.setProperty("--mx", nx * 100 + "%");
-            fig.style.setProperty("--my", ny * 100 + "%");
-            if (!reduceMotion) {
-              tilt.style.transform =
-                "perspective(900px) rotateX(" + ((0.5 - ny) * 7).toFixed(2) + "deg)" +
-                " rotateY(" + ((nx - 0.5) * 9).toFixed(2) + "deg) scale(1.02)";
-            }
-          });
-          fig.addEventListener("pointerleave", function () {
-            tilt.style.transform = "";
-          });
-        }
-
-        var index = lbItems.length;
-        lbItems.push({ el: media, title: p.title });
-        fig.addEventListener("click", function () { openLightbox(index); });
-
-        grid.appendChild(fig);
-      });
-
-      section.appendChild(grid);
-      wrap.appendChild(section);
+  /* ---------- fallback data (mirrors the backend seed) ---------- */
+  function plates(startId, defs) {
+    return defs.map(function (shape, i) {
+      var n = startId + i;
+      return {
+        id: n,
+        title: "Untitled " + (n < 10 ? "0" : "") + n,
+        shape: shape,
+        position: i + 1,
+        image_url: null
+      };
     });
-
-    observeFlaps();
-    observeDevelop();
   }
 
-  /* flash-develop reveal as plates scroll into view */
-  function observeDevelop() {
-    if (reduceMotion) {
-      document.querySelectorAll(".plate").forEach(function (p) { p.classList.add("dev"); });
-      return;
-    }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        io.unobserve(entry.target);
-        entry.target.classList.add("dev");
-      });
-    }, { threshold: 0.12 });
-    document.querySelectorAll(".plate").forEach(function (p) { io.observe(p); });
-  }
-
-  /* ================================================================
-   * lightbox
-   * ================================================================ */
-
-  var lb = document.getElementById("lightbox");
-  var lbStage = document.getElementById("lb-stage");
-  var lbCounter = document.getElementById("lb-counter");
-  var lbIndex = 0;
-
-  function renderLightbox() {
-    var item = lbItems[lbIndex];
-    lbStage.innerHTML = "";
-    var img = document.createElement("img");
-    img.alt = item.title;
-    img.src = item.el.tagName === "CANVAS" ? item.el.toDataURL("image/jpeg", 0.92) : item.el.src;
-    lbStage.appendChild(img);
-    lbCounter.textContent =
-      (lbIndex + 1 < 10 ? "0" : "") + (lbIndex + 1) + " / " +
-      (lbItems.length < 10 ? "0" : "") + lbItems.length;
-  }
-
-  function openLightbox(i) {
-    lbIndex = i;
-    renderLightbox();
-    lb.classList.add("open");
-    cameraFlash();
-  }
-  function closeLightbox() { lb.classList.remove("open"); }
-  function stepLightbox(d) {
-    lbIndex = (lbIndex + d + lbItems.length) % lbItems.length;
-    renderLightbox();
-  }
-
-  lb.querySelector(".lb-close").addEventListener("click", closeLightbox);
-  lb.querySelector(".lb-prev").addEventListener("click", function () { stepLightbox(-1); });
-  lb.querySelector(".lb-next").addEventListener("click", function () { stepLightbox(1); });
-  lb.addEventListener("click", function (e) { if (e.target === lb || e.target === lbStage) closeLightbox(); });
-
-  /* ================================================================
-   * reels — three stacked projection bays
-   * ================================================================ */
-
-  var bayTints = [
-    [240, 166, 60],   // sodium
-    [140, 200, 230],  // flash teal
-    [190, 55, 48]     // blood red
+  var FALLBACK_SERIES = [
+    { slug: "bible-belt", numeral: "I", title: "Bible Belt", kind: "nocturne",
+      plates: plates(1, ["tall", "", "wide", "", "tall", "", "wide", ""]) },
+    { slug: "abandoned-america", numeral: "II", title: "Abandoned America", kind: "votive",
+      plates: plates(9, ["wide", "", "tall", "", "wide", ""]) },
+    { slug: "portraits", numeral: "III", title: "Portraits", kind: "still",
+      plates: plates(15, ["tall", "", "", "tall", "", ""]) },
+    { slug: "everyday-exploration", numeral: "IV", title: "Everyday Exploration", kind: "mixed",
+      plates: plates(21, ["", "wide", "", "tall", "", "wide"]) }
   ];
 
-  function buildReels() {
-    var bays = document.getElementById("bays");
+  var SERIES = FALLBACK_SERIES;
+
+  /* ================================================================
+   * views
+   * ================================================================ */
+
+  var view = document.getElementById("view");
+  var carouselAlive = false;
+  var carouselTimer = null;
+
+  function mediaFor(p, kind) {
+    if (p.image_url) {
+      var img = document.createElement("img");
+      img.src = p.image_url;
+      img.alt = p.title;
+      img.loading = "lazy";
+      return img;
+    }
+    var canvas = document.createElement("canvas");
+    var size = plateSize(p.shape);
+    canvas.width = size.w;
+    canvas.height = size.h;
+    paintPlate(canvas, p.id * 7919, kind);
+    return canvas;
+  }
+
+  /* ---------- landing: crossfade carousel ---------- */
+
+  var CAROUSEL_SIZES = [[900, 1125], [1280, 850], [820, 1100], [1000, 1000], [1300, 730]];
+  var KINDS = ["nocturne", "votive", "still"];
+
+  function carouselPool() {
+    var pool = [];
+    SERIES.forEach(function (s) {
+      s.plates.forEach(function (p) {
+        pool.push({ url: p.image_url, seed: p.id * 7919, kind: s.kind, title: p.title });
+      });
+    });
+    var extra = 0;
+    while (pool.length < CAROUSEL_COUNT) {
+      extra++;
+      pool.push({ url: null, seed: 50021 + extra * 977, kind: KINDS[extra % 3], title: "Untitled" });
+    }
+    // seeded shuffle so the order is stable but not grouped by project
+    var rnd = prng(7);
+    for (var i = pool.length - 1; i > 0; i--) {
+      var j = Math.floor(rnd() * (i + 1));
+      var t = pool[i]; pool[i] = pool[j]; pool[j] = t;
+    }
+    return pool.slice(0, CAROUSEL_COUNT);
+  }
+
+  function renderLanding() {
+    view.innerHTML = "";
+    var wrap = document.createElement("div");
+    wrap.className = "carousel";
+    view.appendChild(wrap);
+
+    var pool = carouselPool();
+    var idx = 0;
+    var current = null;
+    carouselAlive = true;
+
+    function makeSlide(item) {
+      var el;
+      if (item.url) {
+        el = document.createElement("img");
+        el.src = item.url;
+        el.alt = item.title;
+      } else {
+        el = document.createElement("canvas");
+        var size = CAROUSEL_SIZES[item.seed % CAROUSEL_SIZES.length];
+        el.width = size[0];
+        el.height = size[1];
+        paintPlate(el, item.seed, item.kind);
+      }
+      el.className = "slide";
+      return el;
+    }
+
+    function step() {
+      if (!carouselAlive) return;
+      var next = makeSlide(pool[idx]);
+      idx = (idx + 1) % pool.length;
+      wrap.appendChild(next);
+      void next.offsetWidth; // commit initial opacity before transitioning
+      next.classList.add("show");
+      if (current) {
+        var old = current;
+        old.classList.remove("show");
+        setTimeout(function () { old.remove(); }, 380);
+      }
+      current = next;
+      var dwell = DWELL_MIN + Math.random() * (DWELL_MAX - DWELL_MIN);
+      carouselTimer = setTimeout(step, reduceMotion ? 4000 : dwell);
+    }
+    step();
+  }
+
+  function stopCarousel() {
+    carouselAlive = false;
+    clearTimeout(carouselTimer);
+  }
+
+  /* ---------- project pages ---------- */
+
+  function renderProject(slug) {
+    var s = null;
+    for (var i = 0; i < SERIES.length; i++) if (SERIES[i].slug === slug) s = SERIES[i];
+    if (!s) return renderLanding();
+
+    view.innerHTML = "";
+    var grid = slug === "portraits" || slug === "everyday-exploration";
+    var host = view;
+    if (grid) {
+      host = document.createElement("div");
+      host.className = "grid2";
+      view.appendChild(host);
+    }
+
+    s.plates.forEach(function (p) {
+      var fig = document.createElement("figure");
+      fig.className = "piece";
+      fig.appendChild(mediaFor(p, s.kind));
+      var cap = document.createElement("figcaption");
+      cap.textContent = "‘" + p.title + "’";
+      fig.appendChild(cap);
+      host.appendChild(fig);
+    });
+  }
+
+  /* ---------- films ---------- */
+
+  function renderFilms() {
+    view.innerHTML = "";
     var statics = [];
 
     REELS.forEach(function (src, i) {
+      var wrap = document.createElement("figure");
+      wrap.className = "bay-wrap";
       var bay = document.createElement("div");
       bay.className = "bay";
 
@@ -796,177 +426,156 @@
         video.loop = true;
         video.autoplay = true;
         video.playsInline = true;
+        video.controls = true;
         bay.appendChild(video);
       } else {
         var canvas = document.createElement("canvas");
-        canvas.width = 240;
-        canvas.height = 90;
+        canvas.width = 256;
+        canvas.height = 144;
         bay.appendChild(canvas);
-        statics.push({ canvas: canvas, tint: bayTints[i % bayTints.length], visible: false, roll: 0 });
+        statics.push(canvas);
       }
 
-      var tag = document.createElement("span");
-      tag.className = "tag mono";
-      var dot = document.createElement("span");
-      dot.className = "dot";
-      tag.appendChild(dot);
-      tag.appendChild(document.createTextNode("REEL 0" + (i + 1)));
-      bay.appendChild(tag);
-
-      bay.addEventListener("click", function () { toggleBay(bay); });
-      bays.appendChild(bay);
+      wrap.appendChild(bay);
+      var cap = document.createElement("figcaption");
+      cap.textContent = "‘Untitled Film 0" + (i + 1) + "’";
+      wrap.appendChild(cap);
+      view.appendChild(wrap);
     });
 
-    // animated CRT static in empty bays, only while on screen
-    if (statics.length) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          statics.forEach(function (s) {
-            if (s.canvas.parentElement === entry.target) s.visible = entry.isIntersecting;
-          });
-        });
-      }, { threshold: 0.05 });
-      statics.forEach(function (s) { io.observe(s.canvas.parentElement); });
-
-      function drawStatic(s) {
-        var ctx = s.canvas.getContext("2d");
-        var w = s.canvas.width, h = s.canvas.height;
-        var img = ctx.createImageData(w, h);
-        var d = img.data;
-        var t = s.tint;
-        for (var p = 0; p < d.length; p += 4) {
-          var v = Math.random();
-          v = v * v * v * 200; // bias hard toward dark — dead air, not snow-blind
-          d[p] = (v * t[0]) / 255;
-          d[p + 1] = (v * t[1]) / 255;
-          d[p + 2] = (v * t[2]) / 255;
-          d[p + 3] = 255;
-        }
-        ctx.putImageData(img, 0, 0);
-        // rolling tracking band
-        s.roll = (s.roll + 3) % (h * 1.6);
-        ctx.fillStyle = "rgba(255,255,255,0.06)";
-        ctx.fillRect(0, s.roll - 4, w, 8);
-        ctx.fillStyle = "rgba(0,0,0,0.35)";
-        ctx.fillRect(0, s.roll + 4, w, 2);
-      }
-
-      statics.forEach(drawStatic);
-      if (!reduceMotion) {
-        setInterval(function () {
-          statics.forEach(function (s) { if (s.visible) drawStatic(s); });
-        }, 90);
-      }
+    if (statics.length && !reduceMotion) {
+      var timer = setInterval(function () {
+        if (!document.body.contains(statics[0])) return clearInterval(timer);
+        statics.forEach(drawStatic);
+      }, 90);
     }
+    statics.forEach(drawStatic);
   }
 
-  var veil = document.getElementById("veil");
-  var expandedBay = null;
-
-  function toggleBay(bay) {
-    if (expandedBay === bay) return collapseBay();
-    if (expandedBay) expandedBay.classList.remove("expanded");
-    expandedBay = bay;
-    bay.classList.add("expanded");
-    veil.classList.add("on");
-    cameraFlash();
-  }
-  function collapseBay() {
-    if (!expandedBay) return;
-    expandedBay.classList.remove("expanded");
-    expandedBay = null;
-    veil.classList.remove("on");
-  }
-  veil.addEventListener("click", collapseBay);
-
-  /* ================================================================
-   * scroll parallax on the reel stack
-   * ================================================================ */
-
-  function initParallax() {
-    if (reduceMotion) return;
-    var ticking = false;
-    function update() {
-      ticking = false;
-      var mid = window.innerHeight / 2;
-      document.querySelectorAll(".bay").forEach(function (bay, i) {
-        if (bay.classList.contains("expanded")) return;
-        var r = bay.getBoundingClientRect();
-        var off = (r.top + r.height / 2 - mid) / mid; // -1..1 around center
-        bay.style.setProperty("--par", (off * (i - 1) * -18).toFixed(1) + "px");
-      });
+  function drawStatic(canvas) {
+    var ctx = canvas.getContext("2d");
+    var img = ctx.createImageData(canvas.width, canvas.height);
+    var d = img.data;
+    for (var p = 0; p < d.length; p += 4) {
+      var v = Math.random();
+      v = v * v * v * 165; // mostly dark — dead air
+      d[p] = d[p + 1] = d[p + 2] = v;
+      d[p + 3] = 255;
     }
-    window.addEventListener("scroll", function () {
-      if (!ticking) { ticking = true; requestAnimationFrame(update); }
-    }, { passive: true });
-    update();
+    ctx.putImageData(img, 0, 0);
   }
 
-  /* ================================================================
-   * keyboard
-   * ================================================================ */
+  /* ---------- about ---------- */
 
-  document.addEventListener("keydown", function (e) {
-    if (lb.classList.contains("open")) {
-      if (e.key === "Escape") closeLightbox();
-      if (e.key === "ArrowLeft") stepLightbox(-1);
-      if (e.key === "ArrowRight") stepLightbox(1);
-      return;
-    }
-    if (e.key === "Escape") collapseBay();
-  });
+  function renderAbout() {
+    view.innerHTML =
+      '<div class="about">' +
+      '  <p class="placeholder">[ Artist statement — text to come. ]</p>' +
+      '  <form id="inquiry-form" novalidate>' +
+      "    <label><span>NAME</span><input name=\"name\" type=\"text\" required maxlength=\"200\" autocomplete=\"name\" /></label>" +
+      "    <label><span>EMAIL</span><input name=\"email\" type=\"email\" required autocomplete=\"email\" /></label>" +
+      "    <label><span>MESSAGE</span><textarea name=\"message\" rows=\"5\" required maxlength=\"5000\"></textarea></label>" +
+      "    <button type=\"submit\">Send</button>" +
+      '    <p id="form-status" role="status"></p>' +
+      "  </form>" +
+      "</div>";
 
-  /* ================================================================
-   * contact form
-   * ================================================================ */
-
-  var form = document.getElementById("inquiry-form");
-  var status = document.getElementById("form-status");
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    if (!form.reportValidity()) return;
-    var payload = {
-      name: form.elements.name.value.trim(),
-      email: form.elements.email.value.trim(),
-      message: form.elements.message.value.trim()
-    };
-    status.classList.remove("error");
-    status.textContent = "SENDING…";
-    fetch("/api/inquiries", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    })
-      .then(function (res) {
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        form.reset();
-        status.textContent = "RECEIVED.";
+    var form = document.getElementById("inquiry-form");
+    var status = document.getElementById("form-status");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      var payload = {
+        name: form.elements.name.value.trim(),
+        email: form.elements.email.value.trim(),
+        message: form.elements.message.value.trim()
+      };
+      status.classList.remove("error");
+      status.textContent = "Sending…";
+      fetch("/api/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
       })
-      .catch(function () {
-        status.classList.add("error");
-        status.textContent = "NO SIGNAL — EMAIL HELLO@OILANDALTAR.COM";
-      });
+        .then(function (res) {
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          form.reset();
+          status.textContent = "Received.";
+        })
+        .catch(function () {
+          status.classList.add("error");
+          status.textContent = "Couldn’t send — email hello@oilandaltar.com instead.";
+        });
+    });
+  }
+
+  /* ================================================================
+   * router + nav state
+   * ================================================================ */
+
+  var PP_ROUTES = ["abandoned-america", "portraits", "everyday-exploration"];
+  var ppToggle = document.getElementById("pp-toggle");
+  var ppMenu = document.getElementById("pp-menu");
+
+  ppToggle.addEventListener("click", function () {
+    var open = !ppMenu.classList.contains("open");
+    ppMenu.classList.toggle("open", open);
+    ppToggle.classList.toggle("open", open);
+    ppToggle.setAttribute("aria-expanded", open ? "true" : "false");
   });
+
+  function setNav(route) {
+    document.querySelectorAll("#nav a[data-route]").forEach(function (a) {
+      a.classList.toggle("active", a.dataset.route === route);
+    });
+    if (PP_ROUTES.indexOf(route) !== -1) {
+      ppMenu.classList.add("open");
+      ppToggle.classList.add("open");
+      ppToggle.setAttribute("aria-expanded", "true");
+    }
+  }
+
+  function currentRoute() {
+    return location.hash.replace(/^#\/?/, "").replace(/\/+$/, "");
+  }
+
+  function renderRoute() {
+    stopCarousel();
+    var route = currentRoute();
+    setNav(route);
+    window.scrollTo(0, 0);
+
+    if (route === "films") renderFilms();
+    else if (route === "about") renderAbout();
+    else if (route === "") renderLanding();
+    else renderProject(route);
+
+    var titles = {
+      "": "Oil & Altar",
+      "bible-belt": "Oil & Altar — Bible Belt",
+      "abandoned-america": "Oil & Altar — Abandoned America",
+      "portraits": "Oil & Altar — Portraits",
+      "everyday-exploration": "Oil & Altar — Everyday Exploration",
+      "films": "Oil & Altar — Films & Videography",
+      "about": "Oil & Altar — About"
+    };
+    document.title = titles[route] || "Oil & Altar";
+  }
+
+  window.addEventListener("hashchange", renderRoute);
 
   /* ================================================================
    * boot
    * ================================================================ */
-
-  initGrain();
-  initCursorGlow();
-  initHero();
-  initMotes();
-  initNav();
-  initFilmstrip();
-  initMarquees();
-  buildReels();
-  initParallax();
 
   fetch("/api/series")
     .then(function (res) {
       if (!res.ok) throw new Error("HTTP " + res.status);
       return res.json();
     })
-    .then(buildSeries)
-    .catch(function () { buildSeries(FALLBACK_SERIES); });
+    .then(function (data) {
+      if (data && data.length) SERIES = data;
+      renderRoute();
+    })
+    .catch(renderRoute);
 })();

@@ -1,8 +1,11 @@
 # Oil & Altar
 
 Portfolio site for photographer **Bren** ([@oilandaltar](https://www.instagram.com/oilandaltar/)).
-Dark, painterly, chiaroscuro — a chapel-gallery aesthetic with a candlelight cursor,
-animated film grain, scroll reveals, and a keyboard-navigable lightbox.
+Swiss/editorial design after brandnewalias.com: white page, bold black Helvetica,
+red active nav, fixed corner identity block. Hash-routed pages — a crossfading
+landing carousel (~40 images), Bible Belt (flagship project), a Photography
+Portfolio dropdown (Abandoned America / Portraits / Everyday Exploration),
+Films & Videography (stacked mp4 bays), and About with an inquiry form.
 
 ## Structure
 
