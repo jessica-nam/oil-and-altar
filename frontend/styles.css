@@ -111,7 +111,11 @@ button { cursor: crosshair; }
 }
 .site-head .wordmark { font-weight: 700; }
 .site-head nav { display: flex; gap: 2rem; }
-.site-head a { transition: color 0.25s; }
+.site-head a {
+  display: inline-block;
+  transition: color 0.25s, transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  will-change: transform;
+}
 .site-head a:hover { color: var(--sodium); }
 
 footer {
@@ -145,6 +149,16 @@ footer a:hover { color: var(--sodium); }
   );
 }
 
+#motes {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
 /* one sodium streetlight, drifting almost imperceptibly */
 .hero-lamp {
   position: absolute;
@@ -157,11 +171,35 @@ footer a:hover { color: var(--sodium); }
   background: radial-gradient(circle, rgba(240, 166, 60, 0.5) 0%, rgba(240, 166, 60, 0.14) 32%, transparent 68%);
   filter: blur(6px);
   animation: lamp-drift 26s ease-in-out infinite alternate;
-  will-change: transform;
+  will-change: transform, opacity;
 }
 @keyframes lamp-drift {
   0% { transform: translate(0, 0) scale(1); }
   100% { transform: translate(-6vmax, -3vmax) scale(1.12); }
+}
+
+/* boot sequence: the streetlight powers on, then the sign catches */
+.hero-lamp.dark { opacity: 0; animation: none; }
+.hero-lamp.lit {
+  animation: lamp-ignite 1.15s steps(1, end), lamp-drift 26s ease-in-out 1.15s infinite alternate;
+}
+@keyframes lamp-ignite {
+  0% { opacity: 0; }
+  12% { opacity: 0.65; }
+  20% { opacity: 0.08; }
+  34% { opacity: 0.8; }
+  42% { opacity: 0.15; }
+  58% { opacity: 1; }
+  70% { opacity: 0.45; }
+  82%, 100% { opacity: 1; }
+}
+@keyframes ignite {
+  0% { opacity: 0.05; }
+  22% { opacity: 0.8; }
+  38% { opacity: 0.15; }
+  56% { opacity: 1; }
+  72% { opacity: 0.35; }
+  100% { opacity: 1; }
 }
 
 .hero-horizon {
@@ -187,6 +225,8 @@ footer a:hover { color: var(--sodium); }
   font-size: clamp(7rem, 30vmin, 24rem);
   letter-spacing: 0.04em;
 }
+.hero-title .line { will-change: transform; }
+
 .hero-title .amp {
   font-size: clamp(2.6rem, 11vmin, 8rem);
   color: var(--sodium);
@@ -195,16 +235,18 @@ footer a:hover { color: var(--sodium); }
     0 0 60px rgba(240, 166, 60, 0.5),
     0 0 120px rgba(240, 166, 60, 0.3);
   padding: 1.2rem 0;
-  animation: buzz 4.2s linear infinite;
 }
+.hero-title .amp.lit { animation: ignite 0.6s steps(1, end), buzz 4.2s linear 0.6s infinite; }
 
-/* per-letter fluorescent flicker; delays/durations are randomized by JS */
+/* per-letter fluorescent flicker; boot + idle animations are set by JS */
 .hero-title .ch {
   display: inline-block;
-  animation-name: flick;
-  animation-iteration-count: infinite;
-  animation-timing-function: steps(1, end);
+  opacity: 0;
+  will-change: opacity;
 }
+.hero-title .ch.lit { opacity: 1; }
+.hero-title .amp { opacity: 0; }
+.hero-title .amp.lit { opacity: 1; }
 @keyframes flick {
   0%, 5.8%, 6.4%, 41%, 41.7%, 100% { opacity: 1; }
   6% { opacity: 0.35; }
@@ -234,6 +276,41 @@ footer a:hover { color: var(--sodium); }
 @keyframes cue {
   0%, 100% { opacity: 0.35; }
   50% { opacity: 1; }
+}
+
+/* ======================= filmstrip scroll indicator ======================= */
+
+#filmstrip {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 8px;
+  width: 12px;
+  z-index: 26;
+  pointer-events: none;
+  opacity: 0.55;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(230, 221, 204, 0.18) 0 7px,
+    transparent 7px 17px
+  );
+}
+#fs-gate {
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  height: 46px;
+  border: 1px solid rgba(240, 166, 60, 0.85);
+  box-shadow: 0 0 14px rgba(240, 166, 60, 0.35);
+}
+#fs-counter {
+  position: fixed;
+  right: 28px;
+  bottom: 12px;
+  z-index: 26;
+  pointer-events: none;
+  font-size: 0.6rem;
+  color: var(--bone-dim);
 }
 
 /* ======================= marquee ======================= */
@@ -316,6 +393,14 @@ footer a:hover { color: var(--sodium); }
     filter 1.3s ease var(--d, 0s);
 }
 
+/* inner wrapper so 3D tilt never fights the reveal transition on .plate */
+.plate .tilt {
+  height: 100%;
+  transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
 .plate canvas,
 .plate img {
   width: 100%;
@@ -326,7 +411,8 @@ footer a:hover { color: var(--sodium); }
   transition: transform 1.4s cubic-bezier(0.19, 1, 0.22, 1);
 }
 .plate:hover canvas,
-.plate:hover img { transform: scale(1.045); }
+.plate:hover img { transform: scale(1.06); }
+.plate:hover .frame-no { color: var(--sodium); }
 
 /* flashlight sweep that follows the cursor inside a plate */
 .plate .torch {
@@ -540,6 +626,7 @@ footer a:hover { color: var(--sodium); }
   .lb-stage { inset: 3.4rem 0.8rem; }
   .site-head nav { gap: 1rem; }
   .cursor-glow { display: none; }
+  #filmstrip, #fs-counter, #motes { display: none; }
 }
 
 @media (hover: none) {
@@ -557,6 +644,10 @@ footer a:hover { color: var(--sodium); }
   .marquee-track,
   .scroll-cue,
   .bay .dot { animation: none !important; }
+  .hero-title .ch,
+  .hero-title .amp { opacity: 1 !important; }
+  .hero-lamp { opacity: 1 !important; }
+  #motes { display: none; }
   .plate {
     opacity: 1;
     transform: none;

@@ -43,46 +43,48 @@ CREATE TABLE IF NOT EXISTS inquiries (
 );
 """
 
+# Titles are deliberate placeholders — Bren picks the real series/plate names.
+# "kind" only drives the generative placeholder art style, it is never shown.
 SEED = [
     {
-        "slug": "votive",
+        "slug": "series-i",
         "numeral": "I",
-        "title": "Votive",
+        "title": "Untitled I",
         "kind": "votive",
-        "blurb": "Portraits by a single flame. One light, one face, nothing else permitted.",
+        "blurb": "",
         "plates": [
-            ("The Vigil", "tall"),
-            ("Anointed", ""),
-            ("Her Hands, Folded", "wide"),
-            ("Candlemas", ""),
-            ("Saint of the Kitchen Table", "tall"),
+            ("Untitled 01", "tall"),
+            ("Untitled 02", ""),
+            ("Untitled 03", "wide"),
+            ("Untitled 04", ""),
+            ("Untitled 05", "tall"),
         ],
     },
     {
-        "slug": "still-lifes",
+        "slug": "series-ii",
         "numeral": "II",
-        "title": "Still Lifes for a Dark Room",
+        "title": "Untitled II",
         "kind": "still",
-        "blurb": "Fruit, cloth, brass, and bone — arranged the way the Dutch left them.",
+        "blurb": "",
         "plates": [
-            ("Pomegranate & Brass", "wide"),
-            ("Linen Study No. 4", ""),
-            ("The Last Pear", ""),
-            ("Vanitas, Interrupted", "wide"),
+            ("Untitled 06", "wide"),
+            ("Untitled 07", ""),
+            ("Untitled 08", ""),
+            ("Untitled 09", "wide"),
         ],
     },
     {
-        "slug": "nocturnes",
+        "slug": "series-iii",
         "numeral": "III",
-        "title": "Nocturnes",
+        "title": "Untitled III",
         "kind": "nocturne",
-        "blurb": "The city after midnight, exposed long enough for the dark to speak.",
+        "blurb": "",
         "plates": [
-            ("Vespers on 6th Street", ""),
-            ("Blue Hour Mass", "tall"),
-            ("The All-Night Diner", "wide"),
-            ("Streetlight Annunciation", ""),
-            ("Last Train Psalm", ""),
+            ("Untitled 10", ""),
+            ("Untitled 11", "tall"),
+            ("Untitled 12", "wide"),
+            ("Untitled 13", ""),
+            ("Untitled 14", ""),
         ],
     },
 ]

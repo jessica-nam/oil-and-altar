@@ -41,12 +41,13 @@ def test_series_seeded(client):
     res = client.get("/api/series")
     assert res.status_code == 200
     series = res.json()
-    assert [s["slug"] for s in series] == ["votive", "still-lifes", "nocturnes"]
-    votive = series[0]
-    assert votive["numeral"] == "I"
-    assert len(votive["plates"]) == 5
-    assert votive["plates"][0]["title"] == "The Vigil"
-    assert votive["plates"][0]["image_url"] is None
+    assert [s["slug"] for s in series] == ["series-i", "series-ii", "series-iii"]
+    assert [s["title"] for s in series] == ["Untitled I", "Untitled II", "Untitled III"]
+    first = series[0]
+    assert first["numeral"] == "I"
+    assert len(first["plates"]) == 5
+    assert first["plates"][0]["title"] == "Untitled 01"
+    assert first["plates"][0]["image_url"] is None
 
 
 def test_frontend_served_at_root(client):

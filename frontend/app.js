@@ -249,35 +249,36 @@
     grainPass(ctx, w, h, rnd, 22);
   }
 
-  /* ---------- fallback data (mirrors the backend seed) ---------- */
+  /* ---------- fallback data (mirrors the backend seed) ----------
+   * Titles are deliberate placeholders — Bren picks the real names. */
   var FALLBACK_SERIES = [
     {
-      slug: "votive", numeral: "I", title: "Votive", kind: "votive",
+      slug: "series-i", numeral: "I", title: "Untitled I", kind: "votive",
       plates: [
-        { id: 1, title: "The Vigil", shape: "tall", position: 1, image_url: null },
-        { id: 2, title: "Anointed", shape: "", position: 2, image_url: null },
-        { id: 3, title: "Her Hands, Folded", shape: "wide", position: 3, image_url: null },
-        { id: 4, title: "Candlemas", shape: "", position: 4, image_url: null },
-        { id: 5, title: "Saint of the Kitchen Table", shape: "tall", position: 5, image_url: null }
+        { id: 1, title: "Untitled 01", shape: "tall", position: 1, image_url: null },
+        { id: 2, title: "Untitled 02", shape: "", position: 2, image_url: null },
+        { id: 3, title: "Untitled 03", shape: "wide", position: 3, image_url: null },
+        { id: 4, title: "Untitled 04", shape: "", position: 4, image_url: null },
+        { id: 5, title: "Untitled 05", shape: "tall", position: 5, image_url: null }
       ]
     },
     {
-      slug: "still-lifes", numeral: "II", title: "Still Lifes for a Dark Room", kind: "still",
+      slug: "series-ii", numeral: "II", title: "Untitled II", kind: "still",
       plates: [
-        { id: 6, title: "Pomegranate & Brass", shape: "wide", position: 1, image_url: null },
-        { id: 7, title: "Linen Study No. 4", shape: "", position: 2, image_url: null },
-        { id: 8, title: "The Last Pear", shape: "", position: 3, image_url: null },
-        { id: 9, title: "Vanitas, Interrupted", shape: "wide", position: 4, image_url: null }
+        { id: 6, title: "Untitled 06", shape: "wide", position: 1, image_url: null },
+        { id: 7, title: "Untitled 07", shape: "", position: 2, image_url: null },
+        { id: 8, title: "Untitled 08", shape: "", position: 3, image_url: null },
+        { id: 9, title: "Untitled 09", shape: "wide", position: 4, image_url: null }
       ]
     },
     {
-      slug: "nocturnes", numeral: "III", title: "Nocturnes", kind: "nocturne",
+      slug: "series-iii", numeral: "III", title: "Untitled III", kind: "nocturne",
       plates: [
-        { id: 10, title: "Vespers on 6th Street", shape: "", position: 1, image_url: null },
-        { id: 11, title: "Blue Hour Mass", shape: "tall", position: 2, image_url: null },
-        { id: 12, title: "The All-Night Diner", shape: "wide", position: 3, image_url: null },
-        { id: 13, title: "Streetlight Annunciation", shape: "", position: 4, image_url: null },
-        { id: 14, title: "Last Train Psalm", shape: "", position: 5, image_url: null }
+        { id: 10, title: "Untitled 10", shape: "", position: 1, image_url: null },
+        { id: 11, title: "Untitled 11", shape: "tall", position: 2, image_url: null },
+        { id: 12, title: "Untitled 12", shape: "wide", position: 3, image_url: null },
+        { id: 13, title: "Untitled 13", shape: "", position: 4, image_url: null },
+        { id: 14, title: "Untitled 14", shape: "", position: 5, image_url: null }
       ]
     }
   ];
@@ -346,11 +347,16 @@
   }
 
   /* ================================================================
-   * hero: per-letter fluorescent flicker
+   * hero: boot sequence — the streetlight powers on, then each letter
+   * of the sign catches with its own ignition flicker and settles
+   * into a slow idle flicker. Plus scroll parallax on the title.
    * ================================================================ */
 
   function initHero() {
     var rnd = prng(20260713);
+    var lamp = document.getElementById("hero-lamp");
+    var chars = [];
+
     document.querySelectorAll(".hero-title .line").forEach(function (line) {
       if (line.classList.contains("amp")) return;
       var text = line.textContent;
@@ -359,11 +365,192 @@
         var ch = document.createElement("span");
         ch.className = "ch";
         ch.textContent = text[i];
-        ch.style.animationDuration = (4 + rnd() * 7).toFixed(2) + "s";
-        ch.style.animationDelay = "-" + (rnd() * 9).toFixed(2) + "s";
         line.appendChild(ch);
+        chars.push(ch);
       }
     });
+    var amp = document.querySelector(".hero-title .amp");
+
+    if (reduceMotion) {
+      lamp.classList.add("lit");
+      amp.classList.add("lit");
+      chars.forEach(function (ch) { ch.classList.add("lit"); });
+      return;
+    }
+
+    // 1. darkness … 2. streetlight ignites … 3. letters catch one by one
+    lamp.classList.add("dark");
+    setTimeout(function () {
+      lamp.classList.remove("dark");
+      lamp.classList.add("lit");
+    }, 450);
+
+    chars.forEach(function (ch) {
+      var idle = (4 + rnd() * 7).toFixed(2);
+      var idleDelay = (rnd() * 9).toFixed(2);
+      setTimeout(function () {
+        ch.classList.add("lit");
+        ch.style.animation =
+          "ignite 0.5s steps(1,end), flick " + idle + "s steps(1,end) " + idleDelay + "s infinite";
+      }, 700 + rnd() * 1300);
+    });
+    setTimeout(function () { amp.classList.add("lit"); }, 1500 + rnd() * 400);
+
+    // scroll parallax: title lines drift apart, footer strip fades
+    var lines = document.querySelectorAll(".hero-title .line");
+    var foot = document.querySelector(".hero-foot");
+    var speeds = [0.12, 0.24, 0.34];
+    var ticking = false;
+    window.addEventListener("scroll", function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        ticking = false;
+        var y = window.scrollY;
+        if (y > window.innerHeight * 1.2) return;
+        lines.forEach(function (line, i) {
+          line.style.transform = "translateY(" + (y * speeds[i]).toFixed(1) + "px)";
+        });
+        foot.style.opacity = Math.max(0, 1 - y / (window.innerHeight * 0.45));
+      });
+    }, { passive: true });
+  }
+
+  /* ================================================================
+   * dust motes drifting in the lamplight, stirred by the cursor
+   * ================================================================ */
+
+  function initMotes() {
+    if (reduceMotion || touch) return;
+    var hero = document.getElementById("hero");
+    var canvas = document.getElementById("motes");
+    var ctx = canvas.getContext("2d");
+    var rnd = prng(41);
+    var W, H, parts = [];
+    var px = -9999, py = -9999;
+    var visible = true;
+    var t = 0;
+
+    function size() {
+      W = canvas.width = hero.clientWidth;
+      H = canvas.height = hero.clientHeight;
+    }
+    size();
+    window.addEventListener("resize", size);
+
+    for (var i = 0; i < 110; i++) {
+      parts.push({
+        x: rnd() * 2000, y: rnd() * 2000,
+        vx: (rnd() - 0.5) * 0.18, vy: (rnd() - 0.5) * 0.12,
+        tw: 0.4 + rnd() * 2.2, ph: rnd() * 6.28, sz: 0.6 + rnd() * 1.6
+      });
+    }
+
+    hero.addEventListener("pointermove", function (e) {
+      var r = hero.getBoundingClientRect();
+      px = e.clientX - r.left; py = e.clientY - r.top;
+    });
+    hero.addEventListener("pointerleave", function () { px = py = -9999; });
+
+    new IntersectionObserver(function (entries) {
+      visible = entries[0].isIntersecting;
+    }, { threshold: 0 }).observe(hero);
+
+    // the lamp sits at 68% / 58% of the hero (matches the CSS)
+    (function loop() {
+      requestAnimationFrame(loop);
+      if (!visible) return;
+      t += 0.016;
+      ctx.clearRect(0, 0, W, H);
+      var lx = W * 0.68, ly = H * 0.58;
+      for (var i = 0; i < parts.length; i++) {
+        var p = parts[i];
+        // slow wind + a whisper of lift
+        p.vx += Math.sin(t * 0.3 + p.ph) * 0.0012;
+        p.vy -= 0.0006;
+        // the cursor stirs the dust
+        var dx = (p.x % W) - px, dy = (p.y % H) - py;
+        var d2 = dx * dx + dy * dy;
+        if (d2 < 16000) {
+          var f = 0.9 / (d2 + 60);
+          p.vx += dx * f; p.vy += dy * f;
+        }
+        p.vx *= 0.985; p.vy *= 0.985;
+        p.x += p.vx; p.y += p.vy;
+        var x = ((p.x % W) + W) % W, y = ((p.y % H) + H) % H;
+        // brighter near the lamp, twinkling
+        var ldx = x - lx, ldy = y - ly;
+        var near = Math.max(0, 1 - Math.sqrt(ldx * ldx + ldy * ldy) / (W * 0.5));
+        var a = (0.10 + 0.28 * near) * (0.55 + 0.45 * Math.sin(t * p.tw + p.ph));
+        if (a <= 0.01) continue;
+        ctx.fillStyle = "rgba(255, " + (200 + Math.round(40 * near)) + ", 150, " + a.toFixed(3) + ")";
+        ctx.beginPath();
+        ctx.arc(x, y, p.sz * (0.7 + near * 0.6), 0, 6.283);
+        ctx.fill();
+      }
+    })();
+  }
+
+  /* ================================================================
+   * magnetic nav links with glyph scramble on hover
+   * ================================================================ */
+
+  function initNav() {
+    if (touch) return;
+    document.querySelectorAll(".site-head nav a").forEach(function (link) {
+      var orig = link.textContent;
+      link.addEventListener("pointermove", function (e) {
+        var r = link.getBoundingClientRect();
+        var dx = e.clientX - (r.left + r.width / 2);
+        var dy = e.clientY - (r.top + r.height / 2);
+        link.style.transform = "translate(" + (dx * 0.28).toFixed(1) + "px," + (dy * 0.5).toFixed(1) + "px)";
+      });
+      link.addEventListener("pointerleave", function () {
+        link.style.transform = "";
+      });
+      if (reduceMotion) return;
+      var timer = null;
+      link.addEventListener("pointerenter", function () {
+        var tick = 0;
+        clearInterval(timer);
+        timer = setInterval(function () {
+          tick++;
+          var out = "";
+          for (var i = 0; i < orig.length; i++) {
+            out += i < tick - 1 ? orig[i] : GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+          }
+          link.textContent = out;
+          if (tick - 1 >= orig.length) { link.textContent = orig; clearInterval(timer); }
+        }, 34);
+      });
+      link.addEventListener("pointerleave", function () {
+        clearInterval(timer);
+        link.textContent = orig;
+      });
+    });
+  }
+
+  /* ================================================================
+   * filmstrip scroll indicator — the page is a roll of 36 exposures
+   * ================================================================ */
+
+  function initFilmstrip() {
+    var gate = document.getElementById("fs-gate");
+    var counter = document.getElementById("fs-counter");
+    var ticking = false;
+    function update() {
+      ticking = false;
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var p = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+      gate.style.top = (p * (window.innerHeight - 46)).toFixed(1) + "px";
+      var fr = 1 + Math.round(p * 35);
+      counter.textContent = (fr < 10 ? "0" : "") + fr + " / 36";
+    }
+    window.addEventListener("scroll", function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    window.addEventListener("resize", update);
+    update();
   }
 
   /* ================================================================
@@ -481,11 +668,15 @@
           media.height = size.h;
           paintPlate(media, p.id * 7919 + sIdx * 131, s.kind);
         }
-        fig.appendChild(media);
+
+        var tilt = document.createElement("div");
+        tilt.className = "tilt";
+        tilt.appendChild(media);
 
         var torch = document.createElement("div");
         torch.className = "torch";
-        fig.appendChild(torch);
+        tilt.appendChild(torch);
+        fig.appendChild(tilt);
 
         frame++;
         var no = document.createElement("span");
@@ -496,8 +687,18 @@
         if (!touch) {
           fig.addEventListener("pointermove", function (e) {
             var r = fig.getBoundingClientRect();
-            fig.style.setProperty("--mx", ((e.clientX - r.left) / r.width) * 100 + "%");
-            fig.style.setProperty("--my", ((e.clientY - r.top) / r.height) * 100 + "%");
+            var nx = (e.clientX - r.left) / r.width;
+            var ny = (e.clientY - r.top) / r.height;
+            fig.style.setProperty("--mx", nx * 100 + "%");
+            fig.style.setProperty("--my", ny * 100 + "%");
+            if (!reduceMotion) {
+              tilt.style.transform =
+                "perspective(900px) rotateX(" + ((0.5 - ny) * 7).toFixed(2) + "deg)" +
+                " rotateY(" + ((nx - 0.5) * 9).toFixed(2) + "deg) scale(1.02)";
+            }
+          });
+          fig.addEventListener("pointerleave", function () {
+            tilt.style.transform = "";
           });
         }
 
@@ -754,6 +955,9 @@
   initGrain();
   initCursorGlow();
   initHero();
+  initMotes();
+  initNav();
+  initFilmstrip();
   initMarquees();
   buildReels();
   initParallax();
