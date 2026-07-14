@@ -11,6 +11,9 @@ htmlcov/
 backend/data/
 backend/media/
 
+# design reference screenshots — not for the public repo
+inspo-pics/
+
 # secrets
 .env
 

@@ -3,98 +3,107 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Oil &amp; Altar — Photography by Bren</title>
-  <meta name="description" content="Oil &amp; Altar — light studies in the manner of the old masters. Photography by Bren." />
+  <meta name="theme-color" content="#060505" />
+  <meta name="description" content="Oil &amp; Altar — photography" />
+  <title>Oil &amp; Altar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Six+Caps&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+<body id="top">
+  <!-- ambient layers -->
+  <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
+  <canvas id="grain" aria-hidden="true"></canvas>
+  <div id="flash" aria-hidden="true"></div>
+  <div id="veil" aria-hidden="true"></div>
 
-<div id="candle" aria-hidden="true"></div>
-<canvas id="grain" aria-hidden="true"></canvas>
+  <header class="site-head mono">
+    <a class="wordmark" href="#top">OIL&amp;ALTAR</a>
+    <nav>
+      <a href="#index">INDEX</a>
+      <a href="#reels">REELS</a>
+      <a href="#contact">CONTACT</a>
+    </nav>
+  </header>
 
-<nav aria-label="Site">
-  <a class="wordmark" href="#top">Oil <span class="amp">&amp;</span> Altar</a>
-  <ul>
-    <li><a href="#work">Work</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-</nav>
+  <main>
+    <!-- ======================= HERO ======================= -->
+    <section class="hero" id="hero">
+      <div class="hero-sky" aria-hidden="true">
+        <div class="hero-lamp" id="hero-lamp"></div>
+        <div class="hero-horizon"></div>
+      </div>
+      <h1 class="hero-title" id="hero-title">
+        <span class="line">OIL</span>
+        <span class="line amp">&amp;</span>
+        <span class="line">ALTAR</span>
+      </h1>
+      <div class="hero-foot mono" aria-hidden="true">
+        <span>35MM</span>
+        <span class="crosses">&#8224; &#8224; &#8224;</span>
+        <span class="scroll-cue">SCROLL</span>
+      </div>
+    </section>
 
-<header id="top">
-  <div>
-    <p class="eyebrow hero-eyebrow">Photography · Bren</p>
-    <h1 class="hero-title">Oil<span class="amp">&amp;</span>Altar</h1>
-    <p class="hero-sub">Light studies in the manner of the old masters — devotion, shadow, and skin.</p>
-  </div>
-  <p class="scroll-cue">Enter</p>
-</header>
+    <div class="marquee" aria-hidden="true"><div class="marquee-track"></div></div>
 
-<main>
-  <!-- Series sections are rendered here by app.js from GET /api/series -->
-  <div id="work"></div>
+    <!-- ======================= GALLERY ======================= -->
+    <section class="series-wrap" id="index"><!-- built by app.js --></section>
 
-  <section class="about" id="about">
-    <div class="reveal">
-      <p class="eyebrow">The photographer</p>
-      <h2>Bren shoots the way painters used to pray.</h2>
-      <p>Working almost entirely in available light and candlelight, Bren builds photographs the way an altarpiece is built — <strong>slowly, in layers, toward a single point of illumination</strong>. The work borrows its palette from oil painting: umber grounds, gilded highlights, oxblood shadows.</p>
-      <p>Prints are editioned in small runs and finished by hand. Commissions are open for portraiture, editorial, and album artwork.</p>
-      <p><a href="https://www.instagram.com/oilandaltar/" rel="noopener">Follow the work in progress on Instagram →</a></p>
-    </div>
-    <div class="portrait reveal">
-      <div class="frame"><canvas data-art="portrait" width="840" height="1050" role="img" aria-label="Placeholder portrait of the photographer in low candlelight"></canvas></div>
-    </div>
-  </section>
+    <div class="marquee" aria-hidden="true"><div class="marquee-track"></div></div>
 
-  <section class="contact reveal" id="contact">
-    <p class="eyebrow">Commissions &amp; prints</p>
-    <h2>Sit for a portrait.</h2>
-    <p class="lede">Bookings open for portrait sittings, editorial work, and limited-edition prints.</p>
+    <!-- ======================= REELS ======================= -->
+    <section class="reels" id="reels">
+      <header class="sec-head">
+        <span class="mono sec-num">PROJECTION</span>
+        <h2 class="flap" data-text="REELS">REELS</h2>
+      </header>
+      <div class="bays" id="bays"><!-- built by app.js --></div>
+    </section>
 
-    <form id="inquiry-form" novalidate>
-      <div class="field-row">
+    <!-- ======================= CONTACT ======================= -->
+    <section class="contact" id="contact">
+      <header class="sec-head">
+        <span class="mono sec-num">&#8224;</span>
+        <h2 class="flap" data-text="INQUIRE">INQUIRE</h2>
+      </header>
+      <form id="inquiry-form" class="mono" novalidate>
         <label>
-          <span>Name</span>
-          <input type="text" name="name" required maxlength="200" autocomplete="name" />
+          <span>NAME</span>
+          <input name="name" type="text" required maxlength="200" autocomplete="name" />
         </label>
         <label>
-          <span>Email</span>
-          <input type="email" name="email" required autocomplete="email" />
+          <span>EMAIL</span>
+          <input name="email" type="email" required autocomplete="email" />
         </label>
-      </div>
-      <label>
-        <span>What are you dreaming of?</span>
-        <textarea name="message" rows="5" required maxlength="5000"></textarea>
-      </label>
-      <div class="form-actions">
-        <button type="submit">Send inquiry</button>
-        <p id="form-status" role="status" aria-live="polite"></p>
-      </div>
-    </form>
+        <label>
+          <span>MESSAGE</span>
+          <textarea name="message" rows="5" required maxlength="5000"></textarea>
+        </label>
+        <button type="submit">SEND</button>
+        <p id="form-status" role="status"></p>
+      </form>
+    </section>
+  </main>
 
-    <div class="contact-links">
-      <a href="https://www.instagram.com/oilandaltar/" rel="noopener">Instagram</a>
-    </div>
-  </section>
-</main>
+  <footer class="mono">
+    <a href="https://www.instagram.com/oilandaltar/" rel="noopener" target="_blank">@OILANDALTAR</a>
+    <span aria-hidden="true">&#8224;</span>
+  </footer>
 
-<footer>
-  <span>© 2026 Oil &amp; Altar</span>
-  <span>All photographs — Bren</span>
-</footer>
-
-<div id="lightbox" role="dialog" aria-modal="true" aria-label="Photograph viewer">
-  <div class="stage"><img alt="" /></div>
-  <div class="bar">
-    <span class="cap"></span>
-    <span class="idx"></span>
+  <!-- ======================= LIGHTBOX ======================= -->
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <button class="lb-btn lb-close" aria-label="Close">&times;</button>
+    <button class="lb-btn lb-prev" aria-label="Previous">&#8249;</button>
+    <button class="lb-btn lb-next" aria-label="Next">&#8250;</button>
+    <div class="lb-stage" id="lb-stage"></div>
+    <span class="lb-counter mono" id="lb-counter"></span>
   </div>
-  <button class="ctl prev" aria-label="Previous photograph">&#8249;</button>
-  <button class="ctl next" aria-label="Next photograph">&#8250;</button>
-  <button class="ctl close" aria-label="Close viewer">✕</button>
-</div>
 
-<script src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
