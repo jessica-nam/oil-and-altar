@@ -585,6 +585,7 @@
   var PP_ROUTES = ["abandoned-america", "portraits", "wanderings"];
   var ppToggle = document.getElementById("pp-toggle");
   var ppMenu = document.getElementById("pp-menu");
+  var bbMenu = document.getElementById("bb-menu");
 
   ppToggle.addEventListener("click", function () {
     var open = !ppMenu.classList.contains("open");
@@ -603,6 +604,8 @@
       ppToggle.classList.add("open");
       ppToggle.setAttribute("aria-expanded", "true");
     }
+    // View Ephemera is a subcategory of Bible Belt — reveal it only in-section.
+    bbMenu.classList.toggle("open", route === "bible-belt" || route.indexOf("bible-belt/") === 0);
   }
 
   function currentRoute() {
