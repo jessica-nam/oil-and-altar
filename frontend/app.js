@@ -412,8 +412,7 @@
     var fig = document.createElement("figure");
     fig.className = "piece";
     fig.appendChild(mediaFor(plate, kind));
-    // "Untitled NN" is bare numbering, not a real title — leave it uncaptioned.
-    if (caption && !/^untitled\b/i.test(plate.title)) {
+    if (caption) {
       var cap = document.createElement("figcaption");
       cap.textContent = "‘" + plate.title + "’";
       fig.appendChild(cap);
@@ -583,16 +582,14 @@
    * router + nav state
    * ================================================================ */
 
-  var PP_ROUTES = ["abandoned-america", "portraits", "wanderings"];
-  var ppToggle = document.getElementById("pp-toggle");
-  var ppMenu = document.getElementById("pp-menu");
   var bbMenu = document.getElementById("bb-menu");
+  var bbToggle = document.getElementById("bb-toggle");
 
-  ppToggle.addEventListener("click", function () {
-    var open = !ppMenu.classList.contains("open");
-    ppMenu.classList.toggle("open", open);
-    ppToggle.classList.toggle("open", open);
-    ppToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  bbToggle.addEventListener("click", function () {
+    var open = !bbMenu.classList.contains("open");
+    bbMenu.classList.toggle("open", open);
+    bbToggle.classList.toggle("open", open);
+    bbToggle.setAttribute("aria-expanded", open ? "true" : "false");
   });
 
   function setNav(route) {
@@ -600,13 +597,12 @@
       var r = a.dataset.route;
       a.classList.toggle("active", r === route || route.indexOf(r + "/") === 0);
     });
-    if (PP_ROUTES.indexOf(route) !== -1) {
-      ppMenu.classList.add("open");
-      ppToggle.classList.add("open");
-      ppToggle.setAttribute("aria-expanded", "true");
-    }
-    // View Ephemera is a subcategory of Bible Belt — reveal it only in-section.
-    bbMenu.classList.toggle("open", route === "bible-belt" || route.indexOf("bible-belt/") === 0);
+    // View Ephemera is a subcategory of Bible Belt — expand it in-section,
+    // collapse it elsewhere (a manual caret open persists until you navigate).
+    var inBibleBelt = route === "bible-belt" || route.indexOf("bible-belt/") === 0;
+    bbMenu.classList.toggle("open", inBibleBelt);
+    bbToggle.classList.toggle("open", inBibleBelt);
+    bbToggle.setAttribute("aria-expanded", inBibleBelt ? "true" : "false");
   }
 
   function currentRoute() {
