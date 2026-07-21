@@ -38,7 +38,7 @@ a { color: inherit; text-decoration: none; }
 
 .wordmark {
   display: block;
-  font-size: 34px;
+  font-size: 40px;
   letter-spacing: -0.01em;
   line-height: 1.1;
 }
@@ -253,7 +253,7 @@ main {
     padding: 28px var(--edge) 70px;
   }
   .carousel { height: 62vh; }
-  .wordmark { font-size: 28px; }
+  .wordmark { font-size: 33px; }
   .corner nav a, .nav-parent { font-size: 23px; }
   .submenu a { font-size: 19px; }
   .grid2 { grid-template-columns: 1fr; }
