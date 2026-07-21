@@ -412,7 +412,8 @@
     var fig = document.createElement("figure");
     fig.className = "piece";
     fig.appendChild(mediaFor(plate, kind));
-    if (caption) {
+    // "Untitled NN" is bare numbering, not a real title — leave it uncaptioned.
+    if (caption && !/^untitled\b/i.test(plate.title)) {
       var cap = document.createElement("figcaption");
       cap.textContent = "‘" + plate.title + "’";
       fig.appendChild(cap);
