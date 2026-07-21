@@ -290,9 +290,14 @@
   function mediaFor(p, kind) {
     if (p.image_url) {
       var img = document.createElement("img");
-      img.src = p.image_url;
+      img.className = "shot";
       img.alt = p.title;
       img.loading = "lazy";
+      img.decoding = "async";
+      // Fade in when the bitmap is ready instead of popping from blank.
+      img.onload = img.onerror = function () { img.classList.add("loaded"); };
+      img.src = p.image_url;
+      if (img.complete) img.classList.add("loaded");
       return img;
     }
     var canvas = document.createElement("canvas");
@@ -631,9 +636,32 @@
 
   window.addEventListener("hashchange", renderRoute);
 
+  /* Warm the cache with the top images of every section during idle time so
+   * switching tabs shows the top of the page instantly instead of after a
+   * download. Only the first few per series (above the fold) — the rest
+   * lazy-load on scroll. Videos are never prefetched (too heavy). */
+  function warmGallery() {
+    var urls = [];
+    (GALLERY.series || []).forEach(function (s) {
+      (s.plates || []).slice(0, 8).forEach(function (p) {
+        if (p.image_url) urls.push(p.image_url);
+      });
+    });
+    var i = 0;
+    var idle = window.requestIdleCallback || function (fn) { return setTimeout(fn, 200); };
+    function next() {
+      if (i >= urls.length) return;
+      var img = new Image();
+      img.onload = img.onerror = function () { idle(next); };
+      img.src = urls[i++];
+    }
+    idle(next);
+  }
+
   /* ================================================================
    * boot — gallery data is embedded (gallery-data.js), so render directly.
    * ================================================================ */
 
   renderRoute();
+  warmGallery();
 })();
