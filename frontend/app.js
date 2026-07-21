@@ -332,6 +332,12 @@
     var current = null;
     carouselAlive = true;
 
+    // Warm the browser cache for every real slide up front so crossfades never
+    // fade in to a blank element while the photo is still downloading.
+    pool.forEach(function (item) {
+      if (item.url) { var pre = new Image(); pre.src = item.url; }
+    });
+
     function makeSlide(item) {
       var el;
       if (item.url) {
@@ -349,10 +355,8 @@
       return el;
     }
 
-    function step() {
+    function reveal(next) {
       if (!carouselAlive) return;
-      var next = makeSlide(pool[idx]);
-      idx = (idx + 1) % pool.length;
       wrap.appendChild(next);
       void next.offsetWidth; // commit initial opacity before transitioning
       next.classList.add("show");
@@ -363,6 +367,19 @@
       }
       current = next;
       carouselTimer = setTimeout(step, reduceMotion ? 4000 : DWELL);
+    }
+
+    function step() {
+      if (!carouselAlive) return;
+      var next = makeSlide(pool[idx]);
+      idx = (idx + 1) % pool.length;
+      // For photos, wait until the bitmap is decoded before crossfading in;
+      // canvases (and browsers without decode()) reveal immediately.
+      if (next.tagName === "IMG" && next.decode) {
+        next.decode().then(function () { reveal(next); }, function () { reveal(next); });
+      } else {
+        reveal(next);
+      }
     }
     step();
   }
