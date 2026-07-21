@@ -14,6 +14,10 @@ backend/media/
 # design reference screenshots — not for the public repo
 inspo-pics/
 
+# raw full-res source drop — optimized copies live in frontend/media/
+# (regenerate with: python3 scripts/build_gallery.py)
+photosandvideos/
+
 # secrets
 .env
 

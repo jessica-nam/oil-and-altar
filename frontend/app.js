@@ -1,28 +1,26 @@
 /* Oil & Altar — Swiss-minimal portfolio (after brandnewalias.com).
  *
  * Hash-routed single page:
- *   #/                      landing — crossfade carousel (~40 images)
- *   #/bible-belt            flagship project, single column
- *   #/abandoned-america     |
- *   #/portraits             | Photography Portfolio dropdown, 2-col grid
- *   #/everyday-exploration  |
- *   #/films                 stacked 16:9 video bays (mp4 slots)
- *   #/about                 placeholder statement + inquiry form
+ *   #/                      landing — crossfade carousel (real photos, 1.5s)
+ *   #/bible-belt            flagship project, continuous full-bleed scroll
+ *   #/bible-belt/ephemera   View Ephemera — sub-section of Bible Belt
+ *   #/abandoned-america     continuous scroll (Photography Portfolio)
+ *   #/portraits             grouped by session (Photography Portfolio)
+ *   #/wanderings            2-col grid (Photography Portfolio)
+ *   #/in-passing            stacked 16:9 video bays (atmospheric clips)
+ *   #/about                 bio, statement, contact + inquiry form
  *
- * Data comes from GET /api/series; without a backend (GitHub Pages, file://)
- * it falls back to the embedded seed. Plates without an uploaded photo get a
- * generative placeholder painted in the language of the work. */
+ * Gallery content is injected at load by gallery-data.js (window.GALLERY),
+ * generated from photosandvideos/ by scripts/build_gallery.py. The embedded
+ * fallback below only renders if that file failed to load; any plate without a
+ * photo gets a generative placeholder painted in the language of the work. */
 (function () {
   "use strict";
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* Drop real mp4 paths here when the films are ready, e.g.
-   * ["/media/film-1.mp4", null, null]. Empty slots show static. */
-  var REELS = [null, null, null];
-
-  /* Carousel timing — per Bren's spec */
-  var DWELL_MIN = 1200, DWELL_MAX = 1800, CAROUSEL_COUNT = 40;
+  /* Carousel timing — per Bren's spec: 1.5s per slide */
+  var DWELL = 1500;
 
   /* ---------- seeded PRNG so placeholders render identically every load ---------- */
   function prng(seed) {
@@ -270,13 +268,16 @@
       plates: plates(1, ["tall", "", "wide", "", "tall", "", "wide", ""]) },
     { slug: "abandoned-america", numeral: "II", title: "Abandoned America", kind: "votive",
       plates: plates(9, ["wide", "", "tall", "", "wide", ""]) },
-    { slug: "portraits", numeral: "III", title: "Portraits", kind: "still",
+    { slug: "portraits", numeral: "III", title: "Portraits", kind: "still", layout: "grid",
       plates: plates(15, ["tall", "", "", "tall", "", ""]) },
-    { slug: "everyday-exploration", numeral: "IV", title: "Everyday Exploration", kind: "mixed",
+    { slug: "wanderings", numeral: "IV", title: "Wanderings", kind: "mixed", layout: "grid",
       plates: plates(21, ["", "wide", "", "tall", "", "wide"]) }
   ];
 
-  var SERIES = FALLBACK_SERIES;
+  /* Real content is injected via gallery-data.js (window.GALLERY); the embedded
+   * fallback above only renders if that file failed to load. */
+  var GALLERY = window.GALLERY || {};
+  var SERIES = (GALLERY.series && GALLERY.series.length) ? GALLERY.series : FALLBACK_SERIES;
 
   /* ================================================================
    * views
@@ -308,24 +309,16 @@
   var KINDS = ["nocturne", "votive", "still"];
 
   function carouselPool() {
+    var urls = GALLERY.carousel || [];
+    if (urls.length) {
+      return urls.map(function (u) { return { url: u }; });
+    }
+    // fallback: generative slides if the real carousel didn't load
     var pool = [];
-    SERIES.forEach(function (s) {
-      s.plates.forEach(function (p) {
-        pool.push({ url: p.image_url, seed: p.id * 7919, kind: s.kind, title: p.title });
-      });
-    });
-    var extra = 0;
-    while (pool.length < CAROUSEL_COUNT) {
-      extra++;
-      pool.push({ url: null, seed: 50021 + extra * 977, kind: KINDS[extra % 3], title: "Untitled" });
+    for (var i = 0; i < 24; i++) {
+      pool.push({ url: null, seed: 50021 + i * 977, kind: KINDS[i % 3] });
     }
-    // seeded shuffle so the order is stable but not grouped by project
-    var rnd = prng(7);
-    for (var i = pool.length - 1; i > 0; i--) {
-      var j = Math.floor(rnd() * (i + 1));
-      var t = pool[i]; pool[i] = pool[j]; pool[j] = t;
-    }
-    return pool.slice(0, CAROUSEL_COUNT);
+    return pool;
   }
 
   function renderLanding() {
@@ -344,7 +337,7 @@
       if (item.url) {
         el = document.createElement("img");
         el.src = item.url;
-        el.alt = item.title;
+        el.alt = "";
       } else {
         el = document.createElement("canvas");
         var size = CAROUSEL_SIZES[item.seed % CAROUSEL_SIZES.length];
@@ -369,8 +362,7 @@
         setTimeout(function () { old.remove(); }, 380);
       }
       current = next;
-      var dwell = DWELL_MIN + Math.random() * (DWELL_MAX - DWELL_MIN);
-      carouselTimer = setTimeout(step, reduceMotion ? 4000 : dwell);
+      carouselTimer = setTimeout(step, reduceMotion ? 4000 : DWELL);
     }
     step();
   }
@@ -382,87 +374,128 @@
 
   /* ---------- project pages ---------- */
 
+  function renderIntro(paragraphs) {
+    if (!paragraphs || !paragraphs.length) return;
+    var intro = document.createElement("div");
+    intro.className = "project-intro";
+    paragraphs.forEach(function (text) {
+      var p = document.createElement("p");
+      p.textContent = text;
+      intro.appendChild(p);
+    });
+    view.appendChild(intro);
+  }
+
+  function addPiece(host, plate, kind, caption) {
+    var fig = document.createElement("figure");
+    fig.className = "piece";
+    fig.appendChild(mediaFor(plate, kind));
+    if (caption) {
+      var cap = document.createElement("figcaption");
+      cap.textContent = "‘" + plate.title + "’";
+      fig.appendChild(cap);
+    }
+    host.appendChild(fig);
+  }
+
   function renderProject(slug) {
     var s = null;
     for (var i = 0; i < SERIES.length; i++) if (SERIES[i].slug === slug) s = SERIES[i];
     if (!s) return renderLanding();
 
     view.innerHTML = "";
-    var grid = slug === "portraits" || slug === "everyday-exploration";
+    renderIntro(s.excerpt);
+
+    // Portraits are grouped under session headers; other series are flat.
+    if (s.layout === "sessions") return renderSessions(s);
+
     var host = view;
-    if (grid) {
+    if (s.layout === "grid") {
       host = document.createElement("div");
       host.className = "grid2";
       view.appendChild(host);
     }
+    s.plates.forEach(function (p) { addPiece(host, p, s.kind, true); });
+  }
 
+  function renderSessions(s) {
+    var host = null;
+    var currentSession = null;
     s.plates.forEach(function (p) {
-      var fig = document.createElement("figure");
-      fig.className = "piece";
-      fig.appendChild(mediaFor(p, s.kind));
-      var cap = document.createElement("figcaption");
-      cap.textContent = "‘" + p.title + "’";
-      fig.appendChild(cap);
-      host.appendChild(fig);
+      if (p.session !== currentSession) {
+        currentSession = p.session;
+        var head = document.createElement("h2");
+        head.className = "session-head";
+        head.textContent = p.session;
+        view.appendChild(head);
+        host = document.createElement("div");
+        host.className = "grid2";
+        view.appendChild(host);
+      }
+      addPiece(host, p, s.kind, false);
     });
   }
 
-  /* ---------- films ---------- */
+  /* ---------- in passing (video) ---------- */
 
-  function renderFilms() {
+  function renderInPassing() {
     view.innerHTML = "";
-    var statics = [];
+    var data = GALLERY.inPassing || {};
+    renderIntro(data.excerpt);
 
-    REELS.forEach(function (src, i) {
+    var clips = data.clips || [];
+    if (!clips.length) {
+      var note = document.createElement("p");
+      note.className = "empty-note";
+      note.textContent = "Films coming soon.";
+      view.appendChild(note);
+      return;
+    }
+
+    clips.forEach(function (clip) {
       var wrap = document.createElement("figure");
       wrap.className = "bay-wrap";
       var bay = document.createElement("div");
       bay.className = "bay";
 
-      if (src) {
-        var video = document.createElement("video");
-        video.src = src;
-        video.muted = true;
-        video.loop = true;
-        video.autoplay = true;
-        video.playsInline = true;
-        video.controls = true;
-        bay.appendChild(video);
-      } else {
-        var canvas = document.createElement("canvas");
-        canvas.width = 256;
-        canvas.height = 144;
-        bay.appendChild(canvas);
-        statics.push(canvas);
-      }
+      var video = document.createElement("video");
+      video.src = clip.src;
+      if (clip.poster) video.poster = clip.poster;
+      video.muted = true;
+      video.loop = true;
+      video.autoplay = true;
+      video.playsInline = true;
+      video.controls = true;
+      video.preload = "metadata";
+      bay.appendChild(video);
 
       wrap.appendChild(bay);
       var cap = document.createElement("figcaption");
-      cap.textContent = "‘Untitled Film 0" + (i + 1) + "’";
+      cap.textContent = "‘" + clip.title + "’";
       wrap.appendChild(cap);
       view.appendChild(wrap);
     });
-
-    if (statics.length && !reduceMotion) {
-      var timer = setInterval(function () {
-        if (!document.body.contains(statics[0])) return clearInterval(timer);
-        statics.forEach(drawStatic);
-      }, 90);
-    }
-    statics.forEach(drawStatic);
   }
 
-  function drawStatic(canvas) {
-    var ctx = canvas.getContext("2d");
-    var img = ctx.createImageData(canvas.width, canvas.height);
-    var d = img.data;
-    for (var p = 0; p < d.length; p += 4) {
-      var v = Math.random();
-      v = v * v * v * 165; // mostly dark — dead air
-      d[p] = d[p + 1] = d[p + 2] = v;
-      d[p + 3] = 255;
+  /* ---------- view ephemera (sub-section of Bible Belt) ---------- */
+
+  function renderEphemera() {
+    view.innerHTML = "";
+    var data = GALLERY.ephemera || {};
+    renderIntro(data.headline ? [data.headline] : []);
+
+    var plates = data.plates || [];
+    if (!plates.length) {
+      var note = document.createElement("p");
+      note.className = "empty-note";
+      note.textContent = "Ephemera coming soon.";
+      view.appendChild(note);
+      return;
     }
-    ctx.putImageData(img, 0, 0);
+    var host = document.createElement("div");
+    host.className = "grid2";
+    view.appendChild(host);
+    plates.forEach(function (p) { addPiece(host, p, "nocturne", true); });
   }
 
   /* ---------- about ---------- */
@@ -470,7 +503,21 @@
   function renderAbout() {
     view.innerHTML =
       '<div class="about">' +
-      '  <p class="placeholder">[ Artist statement — text to come. ]</p>' +
+      '  <h1 class="about-name">Brenden Cavazos <span>| oilandaltar</span></h1>' +
+      '  <div class="bio">' +
+      '    <p>Texas Panhandle native and traveling documentary photographer working in night photography, portraiture, and urban exploration, centered on gothic architecture and the American Bible Belt.</p>' +
+      '    <p>Background in content strategy, analytics, supply chain and merchandising at Fortune 1 scale. Fluent in both the creative and operational sides of building a body of work and getting it seen.</p>' +
+      '  </div>' +
+      '  <h2 class="about-sub">What Oil and Altar is</h2>' +
+      '  <p class="about-statement">Oil and Altar takes its name from the two things sitting at the center of the work: oil, the grit, grain, and rust of a place left to weather on its own while altar, is the sacred spaces built to hold belief in a region defined by it. The project moves between the two without resolving the tension: churches lit against the dark, roadside signage preaching salvation next to buildings falling into ruin, portraits held in the same exposure stillness as an abandoned house. It’s an ongoing documentary practice, not a single series, a way of looking at the American South that treats decay and devotion as part of the same picture, and leaves the interpretation to whoever’s looking.</p>' +
+      '  <h2 class="about-sub">Education</h2>' +
+      '  <p class="about-edu">Bachelor of Science, Digital Marketing — Purdue University, 2023</p>' +
+      '  <h2 class="about-sub">Contact</h2>' +
+      '  <ul class="about-contact">' +
+      '    <li><a href="mailto:Brenden.cavazos@gmail.com">Brenden.cavazos@gmail.com</a></li>' +
+      '    <li><a href="https://www.instagram.com/oilandaltar/" rel="noopener" target="_blank">instagram.com/oilandaltar</a></li>' +
+      '    <li><a href="tel:+18069947560">806-994-7560</a></li>' +
+      '  </ul>' +
       '  <form id="inquiry-form" novalidate>' +
       "    <label><span>NAME</span><input name=\"name\" type=\"text\" required maxlength=\"200\" autocomplete=\"name\" /></label>" +
       "    <label><span>EMAIL</span><input name=\"email\" type=\"email\" required autocomplete=\"email\" /></label>" +
@@ -504,7 +551,7 @@
         })
         .catch(function () {
           status.classList.add("error");
-          status.textContent = "Couldn’t send — email hello@oilandaltar.com instead.";
+          status.textContent = "Couldn’t send — email Brenden.cavazos@gmail.com instead.";
         });
     });
   }
@@ -513,7 +560,7 @@
    * router + nav state
    * ================================================================ */
 
-  var PP_ROUTES = ["abandoned-america", "portraits", "everyday-exploration"];
+  var PP_ROUTES = ["abandoned-america", "portraits", "wanderings"];
   var ppToggle = document.getElementById("pp-toggle");
   var ppMenu = document.getElementById("pp-menu");
 
@@ -526,7 +573,8 @@
 
   function setNav(route) {
     document.querySelectorAll("#nav a[data-route]").forEach(function (a) {
-      a.classList.toggle("active", a.dataset.route === route);
+      var r = a.dataset.route;
+      a.classList.toggle("active", r === route || route.indexOf(r + "/") === 0);
     });
     if (PP_ROUTES.indexOf(route) !== -1) {
       ppMenu.classList.add("open");
@@ -545,18 +593,20 @@
     setNav(route);
     window.scrollTo(0, 0);
 
-    if (route === "films") renderFilms();
+    if (route === "in-passing") renderInPassing();
     else if (route === "about") renderAbout();
+    else if (route === "bible-belt/ephemera") renderEphemera();
     else if (route === "") renderLanding();
     else renderProject(route);
 
     var titles = {
       "": "Oil & Altar",
       "bible-belt": "Oil & Altar — Bible Belt",
+      "bible-belt/ephemera": "Oil & Altar — View Ephemera",
       "abandoned-america": "Oil & Altar — Abandoned America",
       "portraits": "Oil & Altar — Portraits",
-      "everyday-exploration": "Oil & Altar — Everyday Exploration",
-      "films": "Oil & Altar — Films & Videography",
+      "wanderings": "Oil & Altar — Wanderings",
+      "in-passing": "Oil & Altar — In Passing",
       "about": "Oil & Altar — About"
     };
     document.title = titles[route] || "Oil & Altar";
@@ -565,17 +615,8 @@
   window.addEventListener("hashchange", renderRoute);
 
   /* ================================================================
-   * boot
+   * boot — gallery data is embedded (gallery-data.js), so render directly.
    * ================================================================ */
 
-  fetch("/api/series")
-    .then(function (res) {
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      return res.json();
-    })
-    .then(function (data) {
-      if (data && data.length) SERIES = data;
-      renderRoute();
-    })
-    .catch(renderRoute);
+  renderRoute();
 })();

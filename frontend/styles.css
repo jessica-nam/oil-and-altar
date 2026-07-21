@@ -85,7 +85,7 @@ a { color: inherit; text-decoration: none; }
 
 .social {
   display: flex;
-  gap: 4.2rem;
+  gap: 2.6rem;
   margin-top: 26px;
   align-items: center;
 }
@@ -121,6 +121,17 @@ main {
 .slide.show { opacity: 1; }
 
 /* ---------- project pages ---------- */
+
+/* project excerpt / description at the top of a series */
+.project-intro { max-width: 640px; margin-bottom: 48px; }
+.project-intro p { font-size: 17px; line-height: 1.5; }
+.project-intro p + p { margin-top: 16px; }
+
+/* portrait session headers */
+.session-head { font-size: 22px; margin: 40px 0 14px; }
+.session-head:first-child { margin-top: 0; }
+
+.empty-note { font-size: 17px; color: #b5b5b5; margin-top: 8px; }
 
 .piece { margin-bottom: 56px; }
 .piece img,
@@ -170,12 +181,27 @@ main {
 
 /* ---------- about ---------- */
 
-.about { max-width: 620px; }
+.about { max-width: 640px; }
 .about .placeholder {
   font-size: 22px;
   line-height: 1.45;
   color: #b5b5b5;
 }
+.about-name { font-size: 30px; line-height: 1.15; margin-bottom: 28px; }
+.about-name span { color: #b5b5b5; }
+.about .bio p { font-size: 17px; line-height: 1.5; }
+.about .bio p + p { margin-top: 16px; }
+.about-sub {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 36px 0 12px;
+}
+.about-statement { font-size: 17px; line-height: 1.5; }
+.about-edu { font-size: 17px; }
+.about-contact { list-style: none; }
+.about-contact li { font-size: 17px; line-height: 1.7; }
+.about-contact a:hover { color: var(--red); }
 
 .about form { margin-top: 56px; display: flex; flex-direction: column; gap: 26px; }
 .about label { display: flex; flex-direction: column; gap: 6px; font-size: 15px; }
