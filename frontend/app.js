@@ -549,32 +549,24 @@
       "  </form>" +
       "</div>";
 
+    // Static hosting has no backend, so compose a pre-filled email in the
+    // visitor's mail app. (Swap for a Formspree POST once that's set up.)
     var form = document.getElementById("inquiry-form");
     var status = document.getElementById("form-status");
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!form.reportValidity()) return;
-      var payload = {
-        name: form.elements.name.value.trim(),
-        email: form.elements.email.value.trim(),
-        message: form.elements.message.value.trim()
-      };
+      var name = form.elements.name.value.trim();
+      var email = form.elements.email.value.trim();
+      var message = form.elements.message.value.trim();
+      var subject = "Oil & Altar — inquiry from " + name;
+      var body = "Name: " + name + "\nEmail: " + email + "\n\n" + message;
+      var mailto = "mailto:Brenden.cavazos@gmail.com" +
+        "?subject=" + encodeURIComponent(subject) +
+        "&body=" + encodeURIComponent(body);
       status.classList.remove("error");
-      status.textContent = "Sending…";
-      fetch("/api/inquiries", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      })
-        .then(function (res) {
-          if (!res.ok) throw new Error("HTTP " + res.status);
-          form.reset();
-          status.textContent = "Received.";
-        })
-        .catch(function () {
-          status.classList.add("error");
-          status.textContent = "Couldn’t send — email Brenden.cavazos@gmail.com instead.";
-        });
+      status.textContent = "Opening your email app…";
+      window.location.href = mailto;
     });
   }
 
