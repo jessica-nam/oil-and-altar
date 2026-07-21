@@ -1,14 +1,20 @@
 /* Oil & Altar — Swiss/editorial system after brandnewalias.com:
- * white page, bold black Helvetica, red active nav, fixed corner identity
- * block, content in a right-hand scrolling column. The photographs are the
+ * white page, black Helvetica, red accent, fixed corner identity block,
+ * content in a right-hand scrolling column. Navigation is loud (bold),
+ * prose and captions are quiet (regular, muted) — the photographs are the
  * only thing that speaks. */
 
 :root {
   --ink: #1d1d1d;
+  --ink-soft: #2e2e2e;   /* long-form prose */
+  --mute: #8b8b8b;       /* captions, kickers, secondary text */
+  --hairline: #e4e4e4;
   --red: #e8130c;
   --paper: #ffffff;
-  --col: 41%;          /* where the content column starts */
+  --col: 41%;            /* where the content column starts */
   --edge: 20px;
+  --prose: 15px;
+  --caption: 12.5px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,11 +26,15 @@ body {
   color: var(--ink);
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 700;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 a { color: inherit; text-decoration: none; }
 
 ::selection { background: var(--ink); color: var(--paper); }
+
+:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
 
 /* ======================= corner block ======================= */
 
@@ -39,18 +49,18 @@ a { color: inherit; text-decoration: none; }
 .wordmark {
   display: block;
   font-size: 40px;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
 }
 
-.corner nav { margin-top: 2px; }
+.corner nav { margin-top: 10px; }
 
 .corner nav a,
 .nav-parent {
   display: block;
-  font-size: 28px;
+  font-size: 27px;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.32;
   background: none;
   border: 0;
   font-family: inherit;
@@ -58,6 +68,7 @@ a { color: inherit; text-decoration: none; }
   text-align: left;
   cursor: pointer;
   padding: 0;
+  transition: color 0.15s ease;
 }
 
 .corner nav a:hover,
@@ -78,10 +89,11 @@ a { color: inherit; text-decoration: none; }
   border: 0;
   padding: 0;
   cursor: pointer;
-  color: inherit;
+  color: var(--mute);
   line-height: 1;
+  transition: color 0.15s ease;
 }
-.subcaret .caret { font-size: 18px; }
+.subcaret .caret { font-size: 17px; }
 .subcaret:hover { color: var(--red); }
 .subcaret.open .caret { transform: rotate(180deg); }
 
@@ -92,17 +104,18 @@ a { color: inherit; text-decoration: none; }
 }
 .submenu.open { max-height: 200px; }
 .submenu a {
-  font-size: 22px;
-  line-height: 1.4;
+  font-size: 20px;
+  line-height: 1.5;
   padding-left: 22px;
 }
 
 .social {
   display: flex;
-  gap: 2.6rem;
-  margin-top: 26px;
+  gap: 2.2rem;
+  margin-top: 30px;
   align-items: center;
 }
+.social a { color: var(--ink); transition: color 0.15s ease; }
 .social a:hover { color: var(--red); }
 .social svg { display: block; }
 
@@ -110,7 +123,7 @@ a { color: inherit; text-decoration: none; }
 
 main {
   margin-left: var(--col);
-  padding: var(--edge) var(--edge) 90px 0;
+  padding: var(--edge) var(--edge) 120px 0;
   min-height: 100vh;
 }
 
@@ -128,7 +141,7 @@ main {
   width: auto;
   height: auto;
   max-width: 100%;
-  max-height: 84%;
+  max-height: 86%;
   opacity: 0;
   transition: opacity 0.3s ease;   /* ~300ms fade, per spec */
 }
@@ -136,23 +149,62 @@ main {
 
 /* ---------- project pages ---------- */
 
+/* series kicker — quiet wayfinding above the excerpt */
+.kicker {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--mute);
+  margin: 6px 0 14px;
+}
+.kicker-numeral {
+  color: var(--red);
+  margin-right: 10px;
+}
+
 /* project excerpt / description at the top of a series */
-.project-intro { max-width: 640px; margin-bottom: 48px; }
-.project-intro p { font-size: 17px; line-height: 1.5; }
-.project-intro p + p { margin-top: 16px; }
+.project-intro {
+  max-width: 560px;
+  margin-bottom: 64px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 18px;
+}
+.project-intro p {
+  font-size: var(--prose);
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+.project-intro p + p { margin-top: 14px; }
 
 /* portrait session headers */
-.session-head { font-size: 22px; margin: 40px 0 14px; }
-.session-head:first-child { margin-top: 0; }
+.session-head {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-top: 1px solid var(--ink);
+  padding-top: 10px;
+  margin: 64px 0 18px;
+}
+.kicker + .session-head,
+.project-intro + .session-head { margin-top: 0; }
 
-.empty-note { font-size: 17px; color: #b5b5b5; margin-top: 8px; }
+.empty-note {
+  font-size: var(--prose);
+  font-weight: 400;
+  color: var(--mute);
+  margin-top: 8px;
+}
 
-.piece { margin-bottom: 56px; }
+.piece { margin-bottom: 88px; }
 .piece img,
 .piece canvas {
   display: block;
   width: 100%;
   height: auto;
+  background: #f4f4f4;   /* quiet placeholder while the file streams in */
 }
 .piece img.shot {
   opacity: 0;
@@ -160,26 +212,37 @@ main {
 }
 .piece img.shot.loaded { opacity: 1; }
 .piece figcaption {
-  font-size: 15px;
-  font-weight: 700;
-  margin-top: 8px;
+  font-size: var(--caption);
+  font-weight: 400;
+  color: var(--mute);
+  letter-spacing: 0.01em;
+  margin-top: 10px;
 }
 
-/* two-column grid (Portraits / Everyday Exploration) */
+/* two-column grid (portrait sessions, ephemera) */
 .grid2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px 14px;
+  gap: 18px;
 }
-.grid2 .piece { margin-bottom: 26px; }
+.grid2 .piece { margin-bottom: 0; }
 
-/* ---------- films ---------- */
+/* masonry columns (Wanderings) — packs mixed frames without ragged rows */
+.masonry {
+  columns: 2;
+  column-gap: 18px;
+}
+.masonry .piece {
+  break-inside: avoid;
+  margin-bottom: 36px;
+}
 
-.bay-wrap { margin-bottom: 56px; }
+/* ---------- in passing (video) ---------- */
+
+.bay-wrap { margin-bottom: 88px; }
 .bay {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
   background: #000;
   overflow: hidden;
 }
@@ -189,48 +252,85 @@ main {
   height: 100%;
   object-fit: cover;
   display: block;
-  image-rendering: pixelated;
 }
-.bay video { image-rendering: auto; }
+.bay canvas { image-rendering: pixelated; }
 .bay-wrap figcaption {
-  font-size: 15px;
-  font-weight: 700;
-  margin-top: 8px;
+  font-size: var(--caption);
+  font-weight: 400;
+  color: var(--mute);
+  letter-spacing: 0.01em;
+  margin-top: 10px;
 }
 
 /* ---------- about ---------- */
 
-.about { max-width: 640px; }
-.about .placeholder {
-  font-size: 22px;
-  line-height: 1.45;
-  color: #b5b5b5;
+.about { max-width: 560px; }
+
+.about-name {
+  font-size: 30px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-bottom: 30px;
 }
-.about-name { font-size: 30px; line-height: 1.15; margin-bottom: 28px; }
-.about-name span { color: #b5b5b5; }
-.about .bio p { font-size: 17px; line-height: 1.5; }
-.about .bio p + p { margin-top: 16px; }
+.about-name span { color: var(--mute); font-weight: 400; }
+
+.about .bio p,
+.about-statement {
+  font-size: var(--prose);
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+.about .bio p + p { margin-top: 14px; }
+
 .about-sub {
-  font-size: 14px;
+  font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin: 36px 0 12px;
+  letter-spacing: 0.16em;
+  color: var(--mute);
+  border-top: 1px solid var(--hairline);
+  padding-top: 14px;
+  margin: 40px 0 12px;
 }
-.about-statement { font-size: 17px; line-height: 1.5; }
-.about-edu { font-size: 17px; }
+
+.about-edu {
+  font-size: var(--prose);
+  font-weight: 400;
+  color: var(--ink-soft);
+}
 .about-contact { list-style: none; }
-.about-contact li { font-size: 17px; line-height: 1.7; }
+.about-contact li {
+  font-size: var(--prose);
+  font-weight: 400;
+  line-height: 1.9;
+}
+.about-contact a { transition: color 0.15s ease; }
 .about-contact a:hover { color: var(--red); }
 
-.about form { margin-top: 56px; display: flex; flex-direction: column; gap: 26px; }
-.about label { display: flex; flex-direction: column; gap: 6px; font-size: 15px; }
+.about form {
+  margin-top: 48px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+.about label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--mute);
+}
 .about input,
 .about textarea {
   border: 0;
-  border-bottom: 2px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
   font-family: inherit;
-  font-weight: 700;
-  font-size: 18px;
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: normal;
   padding: 6px 0;
   border-radius: 0;
   background: transparent;
@@ -243,15 +343,22 @@ main {
   align-self: flex-start;
   font-family: inherit;
   font-weight: 700;
-  font-size: 18px;
+  font-size: 15px;
+  letter-spacing: 0.04em;
   background: var(--ink);
   color: var(--paper);
   border: 0;
-  padding: 10px 34px;
+  padding: 12px 40px;
   cursor: pointer;
+  transition: background 0.15s ease;
 }
 .about button:hover { background: var(--red); }
-#form-status { font-size: 15px; min-height: 1.2em; }
+#form-status {
+  font-size: 13px;
+  font-weight: 400;
+  min-height: 1.2em;
+  color: var(--mute);
+}
 #form-status.error { color: var(--red); }
 
 /* ======================= responsive ======================= */
@@ -264,13 +371,18 @@ main {
   }
   main {
     margin-left: 0;
-    padding: 28px var(--edge) 70px;
+    padding: 28px var(--edge) 80px;
   }
   .carousel { height: 62vh; }
   .wordmark { font-size: 33px; }
-  .corner nav a, .nav-parent { font-size: 23px; }
-  .submenu a { font-size: 19px; }
+  .corner nav a, .nav-parent { font-size: 22px; }
+  .submenu a { font-size: 18px; }
+  .piece { margin-bottom: 56px; }
+  .bay-wrap { margin-bottom: 56px; }
   .grid2 { grid-template-columns: 1fr; }
+  .masonry { columns: 1; }
+  .masonry .piece { margin-bottom: 56px; }
+  .session-head { margin-top: 48px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

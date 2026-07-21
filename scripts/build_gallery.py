@@ -5,8 +5,13 @@ Reads Brenden's raw drop in ``photosandvideos/`` (untracked, full-res), writes
 web-sized assets into ``frontend/media/<slug>/`` and emits
 ``frontend/gallery-data.js`` (a ``window.GALLERY`` global the frontend reads).
 
-Reusable + idempotent: re-run any time the source folder changes (new photos,
-reordered Bible Belt sequence, designated ephemera, etc.).
+Incremental: already-built outputs are skipped, so re-runs only process new or
+removed source files. Delete a file under ``frontend/media/`` to force a
+rebuild of it.
+
+Each image is exported twice:
+  media/<slug>/NN.jpg    full  (<= 2000px long edge)  — scroll pages, carousel
+  media/<slug>/t/NN.jpg  thumb (<=  900px long edge)  — grids via srcset
 
     python3 scripts/build_gallery.py
 
@@ -27,8 +32,10 @@ SRC = ROOT / "photosandvideos"
 MEDIA = ROOT / "frontend" / "media"
 DATA_FILE = ROOT / "frontend" / "gallery-data.js"
 
-MAX_DIM = 2000  # longest edge for stills, px
-JPEG_Q = 72  # sips JPEG quality
+MAX_DIM = 2000  # longest edge for full-size stills, px
+JPEG_Q = 72  # sips JPEG quality (full)
+THUMB_DIM = 900  # longest edge for grid thumbnails, px
+THUMB_Q = 70  # sips JPEG quality (thumb)
 VIDEO_MAX = 1280  # longest edge for video, px
 
 HAS_FFMPEG = shutil.which("ffmpeg") is not None
@@ -136,7 +143,7 @@ def shape_of(w: int, h: int) -> str:
     return ""
 
 
-def resize_jpeg(src: Path, dst: Path) -> str:
+def resize_jpeg(src: Path, dst: Path, max_dim: int, quality: int) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(
         [
@@ -146,9 +153,9 @@ def resize_jpeg(src: Path, dst: Path) -> str:
             "jpeg",
             "-s",
             "formatOptions",
-            str(JPEG_Q),
+            str(quality),
             "-Z",
-            str(MAX_DIM),
+            str(max_dim),
             str(src),
             "--out",
             str(dst),
@@ -156,8 +163,24 @@ def resize_jpeg(src: Path, dst: Path) -> str:
         check=True,
         capture_output=True,
     )
-    w, h = dims(src)
-    return shape_of(w, h)
+
+
+def process_image(src: Path, slug: str, i: int) -> dict:
+    """Export full + thumb (skipping already-built files) and return media facts."""
+    full = MEDIA / slug / f"{i:02d}.jpg"
+    thumb = MEDIA / slug / "t" / f"{i:02d}.jpg"
+    if not full.exists():
+        resize_jpeg(src, full, MAX_DIM, JPEG_Q)
+    if not thumb.exists():
+        resize_jpeg(src, thumb, THUMB_DIM, THUMB_Q)
+    w, h = dims(full)
+    return {
+        "image_url": f"media/{slug}/{i:02d}.jpg",
+        "thumb_url": f"media/{slug}/t/{i:02d}.jpg",
+        "w": w,
+        "h": h,
+        "shape": shape_of(w, h),
+    }
 
 
 def clean_title(name: str) -> str:
@@ -173,33 +196,17 @@ def untitled(n: int) -> str:
     return f"Untitled {n:02d}"
 
 
-def reset_dir(slug: str) -> Path:
-    d = MEDIA / slug
-    if d.exists():
-        shutil.rmtree(d)
-    d.mkdir(parents=True, exist_ok=True)
-    return d
-
-
 # ---- per-series builders ----------------------------------------------------
 
 
 def build_untitled(slug: str, folder: str) -> list[dict]:
     """Sequential 'Untitled 0X' captions in natural filename order."""
     print(f"[{slug}] {folder}")
-    reset_dir(slug)
     imgs = dedup(source_images(folder))
     plates = []
     for i, src in enumerate(imgs, start=1):
-        dst = MEDIA / slug / f"{i:02d}.jpg"
-        shape = resize_jpeg(src, dst)
         plates.append(
-            {
-                "title": untitled(i),
-                "image_url": f"media/{slug}/{i:02d}.jpg",
-                "shape": shape,
-                "session": None,
-            }
+            {"title": untitled(i), "session": None, **process_image(src, slug, i)}
         )
         print(f"    {i:02d}/{len(imgs)}  {src.name}")
     return plates
@@ -208,18 +215,14 @@ def build_untitled(slug: str, folder: str) -> list[dict]:
 def build_titled(slug: str, folder: str) -> list[dict]:
     """Caption = cleaned filename (Wanderings)."""
     print(f"[{slug}] {folder}")
-    reset_dir(slug)
     imgs = dedup(source_images(folder))
     plates = []
     for i, src in enumerate(imgs, start=1):
-        dst = MEDIA / slug / f"{i:02d}.jpg"
-        shape = resize_jpeg(src, dst)
         plates.append(
             {
                 "title": clean_title(src.name),
-                "image_url": f"media/{slug}/{i:02d}.jpg",
-                "shape": shape,
                 "session": None,
+                **process_image(src, slug, i),
             }
         )
         print(f"    {i:02d}/{len(imgs)}  {src.name} -> {plates[-1]['title']}")
@@ -255,7 +258,6 @@ def session_of(path: Path) -> str:
 def build_portraits(slug: str, folder: str) -> list[dict]:
     """Group by session; each plate carries its session header, sessions ordered by month."""
     print(f"[{slug}] {folder}")
-    reset_dir(slug)
     imgs = dedup(source_images(folder))
 
     groups: dict[str, list[Path]] = {}
@@ -274,36 +276,47 @@ def build_portraits(slug: str, folder: str) -> list[dict]:
         header = key.replace(" - ", " — ")
         for src in groups[key]:
             i += 1
-            dst = MEDIA / slug / f"{i:02d}.jpg"
-            shape = resize_jpeg(src, dst)
             plates.append(
-                {
-                    "title": header,
-                    "image_url": f"media/{slug}/{i:02d}.jpg",
-                    "shape": shape,
-                    "session": header,
-                }
+                {"title": header, "session": header, **process_image(src, slug, i)}
             )
         print(f"    {header}: {len(groups[key])} photo(s)")
     return plates
 
 
-def build_carousel(folder: str) -> list[str]:
+def build_carousel(folder: str) -> list[dict]:
     print(f"[carousel] {folder}")
-    reset_dir("carousel")
     imgs = dedup(source_images(folder))
-    urls = []
+    slides = []
     for i, src in enumerate(imgs, start=1):
-        dst = MEDIA / "carousel" / f"{i:02d}.jpg"
-        resize_jpeg(src, dst)
-        urls.append(f"media/carousel/{i:02d}.jpg")
+        info = process_image(src, "carousel", i)
+        slides.append({"url": info["image_url"], "w": info["w"], "h": info["h"]})
         print(f"    {i:02d}/{len(imgs)}  {src.name}")
-    return urls
+    return slides
+
+
+def video_dims(path: Path) -> tuple[int, int]:
+    out = subprocess.run(
+        [
+            "ffprobe",
+            "-v",
+            "error",
+            "-select_streams",
+            "v:0",
+            "-show_entries",
+            "stream=width,height",
+            "-of",
+            "csv=p=0",
+            str(path),
+        ],
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    w, h = out.split(",")[:2]
+    return int(w), int(h)
 
 
 def build_videos(folder: str) -> list[dict]:
     print(f"[in-passing] {folder}")
-    reset_dir("in-passing")
     if not HAS_FFMPEG:
         print(
             "    !! ffmpeg not found — skipping video transcode (re-run when installed)"
@@ -314,60 +327,71 @@ def build_videos(folder: str) -> list[dict]:
         (p for p in d.iterdir() if p.suffix.lower() == ".mov"), key=natural_key
     )
     clips = []
-    scale = f"scale='min({VIDEO_MAX},iw)':-2"
+    # Cap the LONG edge at VIDEO_MAX regardless of orientation (vertical phone
+    # clips would otherwise keep their full height).
+    scale = (
+        f"scale={VIDEO_MAX}:{VIDEO_MAX}:force_original_aspect_ratio=decrease:"
+        "force_divisible_by=2"
+    )
+    (MEDIA / "in-passing").mkdir(parents=True, exist_ok=True)
     for i, src in enumerate(vids, start=1):
         mp4 = MEDIA / "in-passing" / f"{i:02d}.mp4"
         poster = MEDIA / "in-passing" / f"{i:02d}.jpg"
-        subprocess.run(
-            [
-                "ffmpeg",
-                "-y",
-                "-i",
-                str(src),
-                "-vf",
-                scale,
-                "-c:v",
-                "libx264",
-                "-pix_fmt",
-                "yuv420p",
-                "-crf",
-                "24",
-                "-preset",
-                "medium",
-                "-c:a",
-                "aac",
-                "-b:a",
-                "128k",
-                "-movflags",
-                "+faststart",
-                str(mp4),
-            ],
-            check=True,
-            capture_output=True,
-        )
-        subprocess.run(
-            [
-                "ffmpeg",
-                "-y",
-                "-i",
-                str(src),
-                "-vframes",
-                "1",
-                "-vf",
-                scale,
-                str(poster),
-            ],
-            check=True,
-            capture_output=True,
-        )
+        if not mp4.exists():
+            subprocess.run(
+                [
+                    "ffmpeg",
+                    "-y",
+                    "-i",
+                    str(src),
+                    "-vf",
+                    scale,
+                    "-c:v",
+                    "libx264",
+                    "-pix_fmt",
+                    "yuv420p",
+                    "-crf",
+                    "24",
+                    "-preset",
+                    "medium",
+                    "-c:a",
+                    "aac",
+                    "-b:a",
+                    "128k",
+                    "-movflags",
+                    "+faststart",
+                    str(mp4),
+                ],
+                check=True,
+                capture_output=True,
+            )
+        if not poster.exists():
+            subprocess.run(
+                [
+                    "ffmpeg",
+                    "-y",
+                    "-i",
+                    str(src),
+                    "-vframes",
+                    "1",
+                    "-vf",
+                    scale,
+                    str(poster),
+                ],
+                check=True,
+                capture_output=True,
+            )
+        w, h = video_dims(mp4)
         clips.append(
             {
                 "title": clean_title(src.name),
                 "src": f"media/in-passing/{i:02d}.mp4",
                 "poster": f"media/in-passing/{i:02d}.jpg",
+                "w": w,
+                "h": h,
             }
         )
-        print(f"    {i:02d}/{len(vids)}  {src.name} -> {clips[-1]['title']}")
+        print(f"    {i:02d}/{len(vids)}  {src.name} -> {clips[-1]['title']} ({w}x{h})")
     return clips
 
 

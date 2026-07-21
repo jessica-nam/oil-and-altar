@@ -287,15 +287,28 @@
   var carouselAlive = false;
   var carouselTimer = null;
 
-  function mediaFor(p, kind) {
+  /* How wide each layout renders, so the browser can pick thumb vs full. */
+  var SIZES = {
+    scroll: "(max-width: 900px) calc(100vw - 40px), 53vw",
+    grid: "(max-width: 900px) calc(100vw - 40px), 26vw"
+  };
+
+  function mediaFor(p, kind, layout) {
     if (p.image_url) {
       var img = document.createElement("img");
       img.className = "shot";
       img.alt = p.title;
       img.loading = "lazy";
       img.decoding = "async";
+      // Intrinsic dimensions reserve the right space before the file arrives —
+      // no layout shift while a page streams in.
+      if (p.w && p.h) { img.width = p.w; img.height = p.h; }
       // Fade in when the bitmap is ready instead of popping from blank.
       img.onload = img.onerror = function () { img.classList.add("loaded"); };
+      if (p.thumb_url) {
+        img.srcset = p.thumb_url + " 900w, " + p.image_url + " 2000w";
+        img.sizes = layout === "scroll" ? SIZES.scroll : SIZES.grid;
+      }
       img.src = p.image_url;
       if (img.complete) img.classList.add("loaded");
       return img;
@@ -314,10 +327,8 @@
   var KINDS = ["nocturne", "votive", "still"];
 
   function carouselPool() {
-    var urls = GALLERY.carousel || [];
-    if (urls.length) {
-      return urls.map(function (u) { return { url: u }; });
-    }
+    var slides = GALLERY.carousel || [];
+    if (slides.length) return slides;
     // fallback: generative slides if the real carousel didn't load
     var pool = [];
     for (var i = 0; i < 24; i++) {
@@ -349,6 +360,7 @@
         el = document.createElement("img");
         el.src = item.url;
         el.alt = "";
+        if (item.w && item.h) { el.width = item.w; el.height = item.h; }
       } else {
         el = document.createElement("canvas");
         var size = CAROUSEL_SIZES[item.seed % CAROUSEL_SIZES.length];
@@ -396,6 +408,19 @@
 
   /* ---------- project pages ---------- */
 
+  function renderKicker(numeral, title) {
+    var k = document.createElement("p");
+    k.className = "kicker";
+    if (numeral) {
+      var n = document.createElement("span");
+      n.className = "kicker-numeral";
+      n.textContent = numeral;
+      k.appendChild(n);
+    }
+    k.appendChild(document.createTextNode(title));
+    view.appendChild(k);
+  }
+
   function renderIntro(paragraphs) {
     if (!paragraphs || !paragraphs.length) return;
     var intro = document.createElement("div");
@@ -408,10 +433,10 @@
     view.appendChild(intro);
   }
 
-  function addPiece(host, plate, kind, caption) {
+  function addPiece(host, plate, kind, caption, layout) {
     var fig = document.createElement("figure");
     fig.className = "piece";
-    fig.appendChild(mediaFor(plate, kind));
+    fig.appendChild(mediaFor(plate, kind, layout));
     if (caption) {
       var cap = document.createElement("figcaption");
       cap.textContent = "‘" + plate.title + "’";
@@ -426,6 +451,7 @@
     if (!s) return renderLanding();
 
     view.innerHTML = "";
+    renderKicker(s.numeral, s.title);
     renderIntro(s.excerpt);
 
     // Portraits are grouped under session headers; other series are flat.
@@ -433,11 +459,12 @@
 
     var host = view;
     if (s.layout === "grid") {
+      // Masonry columns pack mixed portrait/landscape frames without gaps.
       host = document.createElement("div");
-      host.className = "grid2";
+      host.className = "masonry";
       view.appendChild(host);
     }
-    s.plates.forEach(function (p) { addPiece(host, p, s.kind, true); });
+    s.plates.forEach(function (p) { addPiece(host, p, s.kind, true, s.layout); });
   }
 
   function renderSessions(s) {
@@ -454,7 +481,7 @@
         host.className = "grid2";
         view.appendChild(host);
       }
-      addPiece(host, p, s.kind, false);
+      addPiece(host, p, s.kind, false, "grid");
     });
   }
 
@@ -463,6 +490,7 @@
   function renderInPassing() {
     view.innerHTML = "";
     var data = GALLERY.inPassing || {};
+    renderKicker("V", "In Passing");
     renderIntro(data.excerpt);
 
     var clips = data.clips || [];
@@ -474,22 +502,30 @@
       return;
     }
 
+    var videos = [];
     clips.forEach(function (clip) {
       var wrap = document.createElement("figure");
       wrap.className = "bay-wrap";
       var bay = document.createElement("div");
       bay.className = "bay";
+      if (clip.w && clip.h) {
+        bay.style.aspectRatio = clip.w + " / " + clip.h;
+        // Vertical clips: cap by viewport height instead of column width.
+        if (clip.h > clip.w) {
+          bay.style.maxWidth = "calc(78vh * " + (clip.w / clip.h).toFixed(4) + ")";
+        }
+      }
 
       var video = document.createElement("video");
-      video.src = clip.src;
       if (clip.poster) video.poster = clip.poster;
       video.muted = true;
       video.loop = true;
-      video.autoplay = true;
       video.playsInline = true;
       video.controls = true;
-      video.preload = "metadata";
+      video.preload = "none";
+      video.src = clip.src;
       bay.appendChild(video);
+      videos.push(video);
 
       wrap.appendChild(bay);
       var cap = document.createElement("figcaption");
@@ -497,6 +533,23 @@
       wrap.appendChild(cap);
       view.appendChild(wrap);
     });
+
+    // Stream only what's on screen: play clips as they enter the viewport,
+    // pause them on the way out. Without IO support, first clip autoplays.
+    if ("IntersectionObserver" in window && !reduceMotion) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          var v = entry.target;
+          if (entry.isIntersecting) {
+            var p = v.play();
+            if (p && p.catch) p.catch(function () {});
+          } else if (!v.paused) {
+            v.pause();
+          }
+        });
+      }, { threshold: 0.35 });
+      videos.forEach(function (v) { io.observe(v); });
+    }
   }
 
   /* ---------- view ephemera (sub-section of Bible Belt) ---------- */
@@ -504,6 +557,7 @@
   function renderEphemera() {
     view.innerHTML = "";
     var data = GALLERY.ephemera || {};
+    renderKicker("", "Bible Belt — View Ephemera");
     renderIntro(data.headline ? [data.headline] : []);
 
     var plates = data.plates || [];
@@ -517,7 +571,7 @@
     var host = document.createElement("div");
     host.className = "grid2";
     view.appendChild(host);
-    plates.forEach(function (p) { addPiece(host, p, "nocturne", true); });
+    plates.forEach(function (p) { addPiece(host, p, "nocturne", true, "grid"); });
   }
 
   /* ---------- about ---------- */
@@ -636,7 +690,10 @@
     var urls = [];
     (GALLERY.series || []).forEach(function (s) {
       (s.plates || []).slice(0, 8).forEach(function (p) {
-        if (p.image_url) urls.push(p.image_url);
+        // Warm the file each layout will actually request: grids render from
+        // the 900px thumbs, scroll pages from the full-size export.
+        var u = s.layout === "scroll" ? p.image_url : (p.thumb_url || p.image_url);
+        if (u) urls.push(u);
       });
     });
     var i = 0;
