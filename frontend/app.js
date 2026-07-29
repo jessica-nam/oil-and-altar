@@ -19,6 +19,10 @@
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /* Set when the corner email icon is clicked, so About lands on the contact
+   * form; the About nav link leaves it false and opens at the top. */
+  var scrollToForm = false;
+
   /* Carousel timing — per Bren's spec: 1.5s per slide */
   var DWELL = 1500;
 
@@ -581,6 +585,11 @@
 
   /* ---------- about ---------- */
 
+  function focusContactForm() {
+    var f = document.getElementById("inquiry-form");
+    if (f) f.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+  }
+
   function renderAbout() {
     view.innerHTML =
       '<div class="about">' +
@@ -602,9 +611,10 @@
       "    <label><span>NAME</span><input name=\"name\" type=\"text\" required maxlength=\"200\" autocomplete=\"name\" /></label>" +
       "    <label><span>EMAIL</span><input name=\"email\" type=\"email\" required autocomplete=\"email\" /></label>" +
       "    <label><span>MESSAGE</span><textarea name=\"message\" rows=\"5\" required maxlength=\"5000\"></textarea></label>" +
-      // Formspree config: subject line on the notification email + spam honeypot.
+      // Subject line for Formspree's notification email. (No _gotcha honeypot —
+      // browser autofill fills hidden fields and gets real messages flagged spam;
+      // Formspree does its own spam filtering server-side.)
       '    <input type="hidden" name="_subject" value="New inquiry from oilandaltar.com" />' +
-      '    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px" />' +
       "    <button type=\"submit\">Send</button>" +
       '    <p id="form-status" role="status"></p>' +
       "  </form>" +
@@ -646,6 +656,9 @@
         })
         .catch(function () { fail(null); });
     });
+
+    // Arrived here via the corner email icon → drop the reader at the form.
+    if (scrollToForm) { scrollToForm = false; focusContactForm(); }
   }
 
   /* ================================================================
@@ -661,6 +674,16 @@
     bbToggle.classList.toggle("open", open);
     bbToggle.setAttribute("aria-expanded", open ? "true" : "false");
   });
+
+  // Corner email icon → About page, landed on the contact form.
+  var contactIcon = document.querySelector('.social a[data-contact]');
+  if (contactIcon) {
+    contactIcon.addEventListener("click", function () {
+      scrollToForm = true;
+      // Already on About? No hashchange fires, so scroll now.
+      if (currentRoute() === "about") { scrollToForm = false; focusContactForm(); }
+    });
+  }
 
   function setNav(route) {
     document.querySelectorAll("#nav a[data-route]").forEach(function (a) {
