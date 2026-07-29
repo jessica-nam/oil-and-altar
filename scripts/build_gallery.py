@@ -44,21 +44,24 @@ HAS_FFMPEG = shutil.which("ffmpeg") is not None
 
 EXCERPTS = {
     "abandoned-america": [
-        "Abandoned America documents what's left after the people have gone — "
+        "Abandoned America documents what's left after the people have gone: "
         "farmhouses, water towers, and small-town landmarks weathering and falling in "
         "on themselves across the high plains of Texas, Oklahoma, and Kansas, and the "
         "forested hills of the Ozarks in Arkansas and Missouri. These were homes. These "
         "were the places everyone in town used to pass through. The project sits with one "
-        "unanswerable question: how does a place get like this — and what does it mean "
+        "unanswerable question: how does a place get like this, and what does it mean "
         "that the people who left assumed, wrongly, it would stay the same without them.",
     ],
     "portraits": [
         "Each session is a collaboration with a specific person, named and dated, rather "
         "than a moment caught in passing.",
     ],
-    "wanderings": [],
+    "wanderings": [
+        "Wanderings holds the ordinary, unplanned frames from daily life noticed in "
+        "passing, not staged, not repeated.",
+    ],
     "bible-belt": [
-        "The Bible Belt gets its name for a reason — a church on nearly every corner, in a "
+        "The Bible Belt gets its name for a reason: a church on nearly every corner, in a "
         "region where the culture built around them is visibly aging out. This project sits "
         "in the gap between traditionalism and modernism: the way a generation raised inside "
         "a specific era of Southern Baptist or Catholic practice finds comfort and identity "
@@ -66,10 +69,10 @@ EXCERPTS = {
         "towns, often doesn't.",
         "That gap shows up in strange, specific ways. Small prairie towns with more than "
         "forty churches and barely twenty people aren't, as you'd assume, evidence of a "
-        "community united by shared faith — they're the opposite. Even within the same race, "
+        "community united by shared faith. They're the opposite. Even within the same race, "
         "ethnicity, and religious background, people have splintered into smaller factions, "
         "unable to agree closely enough on theology to worship under one roof.",
-        "Bible Belt holds that tension without resolving it — sincere belief alongside the "
+        "Bible Belt holds that tension without resolving it: sincere belief alongside the "
         "decline of the institutions that housed it, and the uncomfortable overlap between "
         "religion, politics, and money that runs through both. Religion makes some people "
         "feel comforted, some at peace, and others completely alienated from the idea of "
@@ -88,7 +91,7 @@ IN_PASSING_EXCERPT = [
 ]
 
 EPHEMERA_HEADLINE = (
-    "Signage, artifacts, and printed matter collected alongside the main body of work — "
+    "Signage, artifacts, and printed matter collected alongside the main body of work: "
     "the smaller, stranger evidence of how faith shows up in daily life here."
 )
 
@@ -273,7 +276,7 @@ def build_portraits(slug: str, folder: str) -> list[dict]:
     plates: list[dict] = []
     i = 0
     for key in ordered:
-        header = key.replace(" - ", " — ")
+        header = key.replace(" - ", ", ")  # "Brooke N. - March" -> "Brooke N., March"
         for src in groups[key]:
             i += 1
             plates.append(
@@ -315,17 +318,30 @@ def video_dims(path: Path) -> tuple[int, int]:
     return int(w), int(h)
 
 
-def build_videos(folder: str) -> list[dict]:
-    print(f"[in-passing] {folder}")
+VIDEO_EXTS = {".mov", ".mp4", ".m4v"}
+
+
+def build_videos(folders: list[str]) -> list[dict]:
+    print(f"[in-passing] {', '.join(folders)}")
     if not HAS_FFMPEG:
         print(
-            "    !! ffmpeg not found — skipping video transcode (re-run when installed)"
+            "    !! ffmpeg not found, skipping video transcode (re-run when installed)"
         )
         return []
-    d = SRC / folder
-    vids = sorted(
-        (p for p in d.iterdir() if p.suffix.lower() == ".mov"), key=natural_key
-    )
+    # Concatenate clips across folders, natural order within each.
+    vids: list[Path] = []
+    for folder in folders:
+        d = SRC / folder
+        if not d.is_dir():
+            continue
+        vids += sorted(
+            (
+                p
+                for p in d.iterdir()
+                if p.suffix.lower() in VIDEO_EXTS and not p.name.startswith(".")
+            ),
+            key=natural_key,
+        )
     clips = []
     # Cap the LONG edge at VIDEO_MAX regardless of orientation (vertical phone
     # clips would otherwise keep their full height).
@@ -443,8 +459,16 @@ def main() -> None:
     gallery = {
         "series": series,
         "carousel": build_carousel("main coursel "),
-        "inPassing": {"excerpt": IN_PASSING_EXCERPT, "clips": build_videos("Vids")},
-        "ephemera": {"headline": EPHEMERA_HEADLINE, "plates": []},
+        "inPassing": {
+            "excerpt": IN_PASSING_EXCERPT,
+            # Base video set plus any later drops appended in order.
+            "clips": build_videos(["Vids", "In Passing, PT"]),
+        },
+        # Ephemera images carry descriptive filenames, captioned like Wanderings.
+        "ephemera": {
+            "headline": EPHEMERA_HEADLINE,
+            "plates": build_titled("ephemera", "Ephemera"),
+        },
     }
 
     payload = json.dumps(gallery, ensure_ascii=False, indent=2)
@@ -458,6 +482,7 @@ def main() -> None:
     print("\n✓ wrote", DATA_FILE.relative_to(ROOT))
     print(
         f"  {counts} · carousel:{len(gallery['carousel'])} "
+        f"· ephemera:{len(gallery['ephemera']['plates'])} "
         f"· videos:{len(gallery['inPassing']['clips'])}"
     )
 

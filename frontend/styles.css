@@ -1,20 +1,22 @@
 /* Oil & Altar — Swiss/editorial system after brandnewalias.com:
- * white page, black Helvetica, red accent, fixed corner identity block,
+ * white page, black Helvetica, amber/gold accent, fixed corner identity block,
  * content in a right-hand scrolling column. Navigation is loud (bold),
- * prose and captions are quiet (regular, muted) — the photographs are the
+ * prose and captions are quiet (regular) — the photographs are the
  * only thing that speaks. */
 
 :root {
   --ink: #1d1d1d;
   --ink-soft: #2e2e2e;   /* long-form prose */
-  --mute: #8b8b8b;       /* captions, kickers, secondary text */
+  --mute: #8b8b8b;       /* eyebrows, secondary text */
+  --caption-ink: #6b6b6b; /* photo captions — darker so they read as titles */
   --hairline: #e4e4e4;
-  --red: #e8130c;
+  --accent: #c89b5c;     /* amber/gold, sampled from the tungsten range in the work */
+  --alert: #c0392b;      /* muted red, error states only */
   --paper: #ffffff;
   --col: 41%;            /* where the content column starts */
   --edge: 20px;
   --prose: 15px;
-  --caption: 12.5px;
+  --caption: 15px;       /* photo captions — sized to read as titles, not watermarks */
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -34,7 +36,7 @@ a { color: inherit; text-decoration: none; }
 
 ::selection { background: var(--ink); color: var(--paper); }
 
-:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 /* ======================= corner block ======================= */
 
@@ -72,8 +74,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 .corner nav a:hover,
-.nav-parent:hover { color: var(--red); }
-.corner nav a.active { color: var(--red); }
+.nav-parent:hover { color: var(--accent); }
+.corner nav a.active { color: var(--accent); }
 
 .caret {
   display: inline-block;
@@ -94,7 +96,7 @@ a { color: inherit; text-decoration: none; }
   transition: color 0.15s ease;
 }
 .subcaret .caret { font-size: 17px; }
-.subcaret:hover { color: var(--red); }
+.subcaret:hover { color: var(--accent); }
 .subcaret.open .caret { transform: rotate(180deg); }
 
 .submenu {
@@ -116,7 +118,7 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
 }
 .social a { color: var(--ink); transition: color 0.15s ease; }
-.social a:hover { color: var(--red); }
+.social a:hover { color: var(--accent); }
 .social svg { display: block; }
 
 /* ======================= content column ======================= */
@@ -149,17 +151,18 @@ main {
 
 /* ---------- project pages ---------- */
 
-/* series kicker — quiet wayfinding above the excerpt */
+/* series eyebrow — small wayfinding above the excerpt; wide tracking so the
+ * small size reads as intentional (not content, per Bren's note) */
 .kicker {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.26em;
   color: var(--mute);
-  margin: 6px 0 14px;
+  margin: 6px 0 16px;
 }
 .kicker-numeral {
-  color: var(--red);
+  color: var(--accent);
   margin-right: 10px;
 }
 
@@ -214,7 +217,7 @@ main {
 .piece figcaption {
   font-size: var(--caption);
   font-weight: 400;
-  color: var(--mute);
+  color: var(--caption-ink);
   letter-spacing: 0.01em;
   margin-top: 10px;
 }
@@ -257,7 +260,7 @@ main {
 .bay-wrap figcaption {
   font-size: var(--caption);
   font-weight: 400;
-  color: var(--mute);
+  color: var(--caption-ink);
   letter-spacing: 0.01em;
   margin-top: 10px;
 }
@@ -305,7 +308,7 @@ main {
   line-height: 1.9;
 }
 .about-contact a { transition: color 0.15s ease; }
-.about-contact a:hover { color: var(--red); }
+.about-contact a:hover { color: var(--accent); }
 
 .about form {
   margin-top: 48px;
@@ -337,7 +340,7 @@ main {
   color: var(--ink);
 }
 .about input:focus,
-.about textarea:focus { outline: none; border-bottom-color: var(--red); }
+.about textarea:focus { outline: none; border-bottom-color: var(--accent); }
 .about textarea { resize: vertical; }
 .about button {
   align-self: flex-start;
@@ -352,14 +355,14 @@ main {
   cursor: pointer;
   transition: background 0.15s ease;
 }
-.about button:hover { background: var(--red); }
+.about button:hover { background: var(--accent); }
 #form-status {
   font-size: 13px;
   font-weight: 400;
   min-height: 1.2em;
   color: var(--mute);
 }
-#form-status.error { color: var(--red); }
+#form-status.error { color: var(--alert); }
 
 /* ======================= responsive ======================= */
 

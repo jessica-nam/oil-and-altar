@@ -22,6 +22,13 @@
   /* Carousel timing — per Bren's spec: 1.5s per slide */
   var DWELL = 1500;
 
+  /* Contact form posts to Formspree (static-friendly, no backend). Paste the
+   * form's endpoint from the Formspree dashboard (Forms → your form → its URL,
+   * e.g. "https://formspree.io/f/abcdwxyz"). This ID is public and safe to
+   * commit — it is NOT a password. Until it's set, the form falls back to a
+   * pre-filled email. */
+  var FORMSPREE_ENDPOINT = "https://formspree.io/f/REPLACE_WITH_FORM_ID";
+
   /* ---------- seeded PRNG so placeholders render identically every load ---------- */
   function prng(seed) {
     var s = seed >>> 0;
@@ -557,7 +564,7 @@
   function renderEphemera() {
     view.innerHTML = "";
     var data = GALLERY.ephemera || {};
-    renderKicker("", "Bible Belt — View Ephemera");
+    renderKicker("", "Bible Belt / View Ephemera");
     renderIntro(data.headline ? [data.headline] : []);
 
     var plates = data.plates || [];
@@ -587,12 +594,11 @@
       '  <h2 class="about-sub">What Oil and Altar is</h2>' +
       '  <p class="about-statement">Oil and Altar takes its name from the two things sitting at the center of the work: oil, the grit, grain, and rust of a place left to weather on its own while altar, is the sacred spaces built to hold belief in a region defined by it. The project moves between the two without resolving the tension: churches lit against the dark, roadside signage preaching salvation next to buildings falling into ruin, portraits held in the same exposure stillness as an abandoned house. It’s an ongoing documentary practice, not a single series, a way of looking at the American South that treats decay and devotion as part of the same picture, and leaves the interpretation to whoever’s looking.</p>' +
       '  <h2 class="about-sub">Education</h2>' +
-      '  <p class="about-edu">Bachelor of Science, Digital Marketing — Purdue University, 2023</p>' +
+      '  <p class="about-edu">Bachelor of Science in Digital Marketing, Purdue University, 2023</p>' +
       '  <h2 class="about-sub">Contact</h2>' +
       '  <ul class="about-contact">' +
       '    <li><a href="mailto:Brenden.cavazos@gmail.com">Brenden.cavazos@gmail.com</a></li>' +
       '    <li><a href="https://www.instagram.com/oilandaltar/" rel="noopener" target="_blank">instagram.com/oilandaltar</a></li>' +
-      '    <li><a href="tel:+18069947560">806-994-7560</a></li>' +
       '  </ul>' +
       '  <form id="inquiry-form" novalidate>' +
       "    <label><span>NAME</span><input name=\"name\" type=\"text\" required maxlength=\"200\" autocomplete=\"name\" /></label>" +
@@ -603,24 +609,49 @@
       "  </form>" +
       "</div>";
 
-    // Static hosting has no backend, so compose a pre-filled email in the
-    // visitor's mail app. (Swap for a Formspree POST once that's set up.)
     var form = document.getElementById("inquiry-form");
     var status = document.getElementById("form-status");
+
+    // Fallback for before the Formspree endpoint is filled in: pre-fill an email.
+    function mailtoFallback(name, email, message) {
+      var subject = "Oil & Altar inquiry from " + name;
+      var body = "Name: " + name + "\nEmail: " + email + "\n\n" + message;
+      window.location.href = "mailto:Brenden.cavazos@gmail.com" +
+        "?subject=" + encodeURIComponent(subject) +
+        "&body=" + encodeURIComponent(body);
+    }
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!form.reportValidity()) return;
       var name = form.elements.name.value.trim();
       var email = form.elements.email.value.trim();
       var message = form.elements.message.value.trim();
-      var subject = "Oil & Altar — inquiry from " + name;
-      var body = "Name: " + name + "\nEmail: " + email + "\n\n" + message;
-      var mailto = "mailto:Brenden.cavazos@gmail.com" +
-        "?subject=" + encodeURIComponent(subject) +
-        "&body=" + encodeURIComponent(body);
       status.classList.remove("error");
-      status.textContent = "Opening your email app…";
-      window.location.href = mailto;
+
+      if (FORMSPREE_ENDPOINT.indexOf("REPLACE_WITH_FORM_ID") !== -1) {
+        status.textContent = "Opening your email app…";
+        return mailtoFallback(name, email, message);
+      }
+
+      status.textContent = "Sending…";
+      fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: new FormData(form)
+      })
+        .then(function (res) {
+          if (res.ok) {
+            form.reset();
+            status.textContent = "Thank you — your message is on its way.";
+          } else {
+            throw new Error("HTTP " + res.status);
+          }
+        })
+        .catch(function () {
+          status.classList.add("error");
+          status.textContent = "Couldn’t send — email Brenden.cavazos@gmail.com instead.";
+        });
     });
   }
 

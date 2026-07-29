@@ -8,9 +8,9 @@ window.GALLERY = {
       "kind": "nocturne",
       "layout": "scroll",
       "excerpt": [
-        "The Bible Belt gets its name for a reason — a church on nearly every corner, in a region where the culture built around them is visibly aging out. This project sits in the gap between traditionalism and modernism: the way a generation raised inside a specific era of Southern Baptist or Catholic practice finds comfort and identity in these buildings, and the way a Millennial or Gen Z viewer, raised in the same towns, often doesn't.",
-        "That gap shows up in strange, specific ways. Small prairie towns with more than forty churches and barely twenty people aren't, as you'd assume, evidence of a community united by shared faith — they're the opposite. Even within the same race, ethnicity, and religious background, people have splintered into smaller factions, unable to agree closely enough on theology to worship under one roof.",
-        "Bible Belt holds that tension without resolving it — sincere belief alongside the decline of the institutions that housed it, and the uncomfortable overlap between religion, politics, and money that runs through both. Religion makes some people feel comforted, some at peace, and others completely alienated from the idea of faith itself. Everyone brings their own interpretation, and the work is meant to let the viewer arrive at their own read on both the signs and the religion behind them. This is an ongoing project, built in part through interviews with pastors, church members, and non-religious individuals to understand their perspective firsthand."
+        "The Bible Belt gets its name for a reason: a church on nearly every corner, in a region where the culture built around them is visibly aging out. This project sits in the gap between traditionalism and modernism: the way a generation raised inside a specific era of Southern Baptist or Catholic practice finds comfort and identity in these buildings, and the way a Millennial or Gen Z viewer, raised in the same towns, often doesn't.",
+        "That gap shows up in strange, specific ways. Small prairie towns with more than forty churches and barely twenty people aren't, as you'd assume, evidence of a community united by shared faith. They're the opposite. Even within the same race, ethnicity, and religious background, people have splintered into smaller factions, unable to agree closely enough on theology to worship under one roof.",
+        "Bible Belt holds that tension without resolving it: sincere belief alongside the decline of the institutions that housed it, and the uncomfortable overlap between religion, politics, and money that runs through both. Religion makes some people feel comforted, some at peace, and others completely alienated from the idea of faith itself. Everyone brings their own interpretation, and the work is meant to let the viewer arrive at their own read on both the signs and the religion behind them. This is an ongoing project, built in part through interviews with pastors, church members, and non-religious individuals to understand their perspective firsthand."
       ],
       "plates": [
         {
@@ -427,7 +427,7 @@ window.GALLERY = {
       "kind": "votive",
       "layout": "scroll",
       "excerpt": [
-        "Abandoned America documents what's left after the people have gone — farmhouses, water towers, and small-town landmarks weathering and falling in on themselves across the high plains of Texas, Oklahoma, and Kansas, and the forested hills of the Ozarks in Arkansas and Missouri. These were homes. These were the places everyone in town used to pass through. The project sits with one unanswerable question: how does a place get like this — and what does it mean that the people who left assumed, wrongly, it would stay the same without them."
+        "Abandoned America documents what's left after the people have gone: farmhouses, water towers, and small-town landmarks weathering and falling in on themselves across the high plains of Texas, Oklahoma, and Kansas, and the forested hills of the Ozarks in Arkansas and Missouri. These were homes. These were the places everyone in town used to pass through. The project sits with one unanswerable question: how does a place get like this, and what does it mean that the people who left assumed, wrongly, it would stay the same without them."
       ],
       "plates": [
         {
@@ -803,8 +803,8 @@ window.GALLERY = {
       ],
       "plates": [
         {
-          "title": "Paul S. — February",
-          "session": "Paul S. — February",
+          "title": "Paul S., February",
+          "session": "Paul S., February",
           "image_url": "media/portraits/01.jpg",
           "thumb_url": "media/portraits/t/01.jpg",
           "w": 1489,
@@ -812,8 +812,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Paul S. — February",
-          "session": "Paul S. — February",
+          "title": "Paul S., February",
+          "session": "Paul S., February",
           "image_url": "media/portraits/02.jpg",
           "thumb_url": "media/portraits/t/02.jpg",
           "w": 1333,
@@ -821,8 +821,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Paul S. — February",
-          "session": "Paul S. — February",
+          "title": "Paul S., February",
+          "session": "Paul S., February",
           "image_url": "media/portraits/03.jpg",
           "thumb_url": "media/portraits/t/03.jpg",
           "w": 1333,
@@ -830,8 +830,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Brooke N. — March",
-          "session": "Brooke N. — March",
+          "title": "Brooke N., March",
+          "session": "Brooke N., March",
           "image_url": "media/portraits/04.jpg",
           "thumb_url": "media/portraits/t/04.jpg",
           "w": 1622,
@@ -839,8 +839,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Brooke N. — March",
-          "session": "Brooke N. — March",
+          "title": "Brooke N., March",
+          "session": "Brooke N., March",
           "image_url": "media/portraits/05.jpg",
           "thumb_url": "media/portraits/t/05.jpg",
           "w": 2000,
@@ -848,8 +848,8 @@ window.GALLERY = {
           "shape": ""
         },
         {
-          "title": "Brooke N. — March",
-          "session": "Brooke N. — March",
+          "title": "Brooke N., March",
+          "session": "Brooke N., March",
           "image_url": "media/portraits/06.jpg",
           "thumb_url": "media/portraits/t/06.jpg",
           "w": 1475,
@@ -857,8 +857,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Brooke N. — March",
-          "session": "Brooke N. — March",
+          "title": "Brooke N., March",
+          "session": "Brooke N., March",
           "image_url": "media/portraits/07.jpg",
           "thumb_url": "media/portraits/t/07.jpg",
           "w": 1733,
@@ -866,8 +866,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Brooke N. — March",
-          "session": "Brooke N. — March",
+          "title": "Brooke N., March",
+          "session": "Brooke N., March",
           "image_url": "media/portraits/08.jpg",
           "thumb_url": "media/portraits/t/08.jpg",
           "w": 1645,
@@ -875,8 +875,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Brooke N. — March",
-          "session": "Brooke N. — March",
+          "title": "Brooke N., March",
+          "session": "Brooke N., March",
           "image_url": "media/portraits/09.jpg",
           "thumb_url": "media/portraits/t/09.jpg",
           "w": 1426,
@@ -884,8 +884,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Brooke N. — March",
-          "session": "Brooke N. — March",
+          "title": "Brooke N., March",
+          "session": "Brooke N., March",
           "image_url": "media/portraits/10.jpg",
           "thumb_url": "media/portraits/t/10.jpg",
           "w": 1469,
@@ -893,8 +893,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Brooke N. — March",
-          "session": "Brooke N. — March",
+          "title": "Brooke N., March",
+          "session": "Brooke N., March",
           "image_url": "media/portraits/11.jpg",
           "thumb_url": "media/portraits/t/11.jpg",
           "w": 1632,
@@ -902,8 +902,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Brooke N. — March",
-          "session": "Brooke N. — March",
+          "title": "Brooke N., March",
+          "session": "Brooke N., March",
           "image_url": "media/portraits/12.jpg",
           "thumb_url": "media/portraits/t/12.jpg",
           "w": 2000,
@@ -911,8 +911,8 @@ window.GALLERY = {
           "shape": "wide"
         },
         {
-          "title": "Brooke N. — March",
-          "session": "Brooke N. — March",
+          "title": "Brooke N., March",
+          "session": "Brooke N., March",
           "image_url": "media/portraits/13.jpg",
           "thumb_url": "media/portraits/t/13.jpg",
           "w": 1469,
@@ -920,8 +920,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Brooke N. — March",
-          "session": "Brooke N. — March",
+          "title": "Brooke N., March",
+          "session": "Brooke N., March",
           "image_url": "media/portraits/14.jpg",
           "thumb_url": "media/portraits/t/14.jpg",
           "w": 1469,
@@ -929,8 +929,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Brooke N. — March",
-          "session": "Brooke N. — March",
+          "title": "Brooke N., March",
+          "session": "Brooke N., March",
           "image_url": "media/portraits/15.jpg",
           "thumb_url": "media/portraits/t/15.jpg",
           "w": 1333,
@@ -938,8 +938,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Hannah L. — March",
-          "session": "Hannah L. — March",
+          "title": "Hannah L., March",
+          "session": "Hannah L., March",
           "image_url": "media/portraits/16.jpg",
           "thumb_url": "media/portraits/t/16.jpg",
           "w": 1495,
@@ -947,8 +947,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Hannah L. — April",
-          "session": "Hannah L. — April",
+          "title": "Hannah L., April",
+          "session": "Hannah L., April",
           "image_url": "media/portraits/17.jpg",
           "thumb_url": "media/portraits/t/17.jpg",
           "w": 1437,
@@ -956,8 +956,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Hannah L. — April",
-          "session": "Hannah L. — April",
+          "title": "Hannah L., April",
+          "session": "Hannah L., April",
           "image_url": "media/portraits/18.jpg",
           "thumb_url": "media/portraits/t/18.jpg",
           "w": 1523,
@@ -965,8 +965,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Hannah L. — April",
-          "session": "Hannah L. — April",
+          "title": "Hannah L., April",
+          "session": "Hannah L., April",
           "image_url": "media/portraits/19.jpg",
           "thumb_url": "media/portraits/t/19.jpg",
           "w": 1490,
@@ -974,8 +974,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Hannah L. — April",
-          "session": "Hannah L. — April",
+          "title": "Hannah L., April",
+          "session": "Hannah L., April",
           "image_url": "media/portraits/20.jpg",
           "thumb_url": "media/portraits/t/20.jpg",
           "w": 1307,
@@ -983,8 +983,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Hannah L. — April",
-          "session": "Hannah L. — April",
+          "title": "Hannah L., April",
+          "session": "Hannah L., April",
           "image_url": "media/portraits/21.jpg",
           "thumb_url": "media/portraits/t/21.jpg",
           "w": 1439,
@@ -992,8 +992,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Hannah L. — April",
-          "session": "Hannah L. — April",
+          "title": "Hannah L., April",
+          "session": "Hannah L., April",
           "image_url": "media/portraits/22.jpg",
           "thumb_url": "media/portraits/t/22.jpg",
           "w": 1479,
@@ -1001,8 +1001,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Hannah L. — April",
-          "session": "Hannah L. — April",
+          "title": "Hannah L., April",
+          "session": "Hannah L., April",
           "image_url": "media/portraits/23.jpg",
           "thumb_url": "media/portraits/t/23.jpg",
           "w": 1533,
@@ -1010,8 +1010,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Hannah L. — April",
-          "session": "Hannah L. — April",
+          "title": "Hannah L., April",
+          "session": "Hannah L., April",
           "image_url": "media/portraits/24.jpg",
           "thumb_url": "media/portraits/t/24.jpg",
           "w": 1162,
@@ -1019,8 +1019,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Pranav N. — April",
-          "session": "Pranav N. — April",
+          "title": "Pranav N., April",
+          "session": "Pranav N., April",
           "image_url": "media/portraits/25.jpg",
           "thumb_url": "media/portraits/t/25.jpg",
           "w": 1648,
@@ -1028,8 +1028,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Pranav N. — April",
-          "session": "Pranav N. — April",
+          "title": "Pranav N., April",
+          "session": "Pranav N., April",
           "image_url": "media/portraits/26.jpg",
           "thumb_url": "media/portraits/t/26.jpg",
           "w": 1496,
@@ -1037,8 +1037,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Pranav N. — April",
-          "session": "Pranav N. — April",
+          "title": "Pranav N., April",
+          "session": "Pranav N., April",
           "image_url": "media/portraits/27.jpg",
           "thumb_url": "media/portraits/t/27.jpg",
           "w": 1747,
@@ -1046,8 +1046,8 @@ window.GALLERY = {
           "shape": ""
         },
         {
-          "title": "Pranav N. — April",
-          "session": "Pranav N. — April",
+          "title": "Pranav N., April",
+          "session": "Pranav N., April",
           "image_url": "media/portraits/28.jpg",
           "thumb_url": "media/portraits/t/28.jpg",
           "w": 1766,
@@ -1055,8 +1055,8 @@ window.GALLERY = {
           "shape": ""
         },
         {
-          "title": "Pranav N. — April",
-          "session": "Pranav N. — April",
+          "title": "Pranav N., April",
+          "session": "Pranav N., April",
           "image_url": "media/portraits/29.jpg",
           "thumb_url": "media/portraits/t/29.jpg",
           "w": 1542,
@@ -1064,8 +1064,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Diego and Isaac — May",
-          "session": "Diego and Isaac — May",
+          "title": "Diego and Isaac, May",
+          "session": "Diego and Isaac, May",
           "image_url": "media/portraits/30.jpg",
           "thumb_url": "media/portraits/t/30.jpg",
           "w": 2000,
@@ -1073,8 +1073,8 @@ window.GALLERY = {
           "shape": "wide"
         },
         {
-          "title": "Manny U. — May",
-          "session": "Manny U. — May",
+          "title": "Manny U., May",
+          "session": "Manny U., May",
           "image_url": "media/portraits/31.jpg",
           "thumb_url": "media/portraits/t/31.jpg",
           "w": 1998,
@@ -1082,8 +1082,8 @@ window.GALLERY = {
           "shape": ""
         },
         {
-          "title": "Manny U. — May",
-          "session": "Manny U. — May",
+          "title": "Manny U., May",
+          "session": "Manny U., May",
           "image_url": "media/portraits/32.jpg",
           "thumb_url": "media/portraits/t/32.jpg",
           "w": 1789,
@@ -1091,8 +1091,8 @@ window.GALLERY = {
           "shape": ""
         },
         {
-          "title": "Manny U. — May",
-          "session": "Manny U. — May",
+          "title": "Manny U., May",
+          "session": "Manny U., May",
           "image_url": "media/portraits/33.jpg",
           "thumb_url": "media/portraits/t/33.jpg",
           "w": 1660,
@@ -1100,8 +1100,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Manny U. — May",
-          "session": "Manny U. — May",
+          "title": "Manny U., May",
+          "session": "Manny U., May",
           "image_url": "media/portraits/34.jpg",
           "thumb_url": "media/portraits/t/34.jpg",
           "w": 1514,
@@ -1109,8 +1109,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Dani And Flavie — June",
-          "session": "Dani And Flavie — June",
+          "title": "Dani And Flavie, June",
+          "session": "Dani And Flavie, June",
           "image_url": "media/portraits/35.jpg",
           "thumb_url": "media/portraits/t/35.jpg",
           "w": 1616,
@@ -1118,8 +1118,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Elena R. — June",
-          "session": "Elena R. — June",
+          "title": "Elena R., June",
+          "session": "Elena R., June",
           "image_url": "media/portraits/36.jpg",
           "thumb_url": "media/portraits/t/36.jpg",
           "w": 1333,
@@ -1127,8 +1127,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Elena R. — June",
-          "session": "Elena R. — June",
+          "title": "Elena R., June",
+          "session": "Elena R., June",
           "image_url": "media/portraits/37.jpg",
           "thumb_url": "media/portraits/t/37.jpg",
           "w": 1409,
@@ -1136,8 +1136,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Elena R. — June",
-          "session": "Elena R. — June",
+          "title": "Elena R., June",
+          "session": "Elena R., June",
           "image_url": "media/portraits/38.jpg",
           "thumb_url": "media/portraits/t/38.jpg",
           "w": 1389,
@@ -1145,8 +1145,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Hannah L. — June",
-          "session": "Hannah L. — June",
+          "title": "Hannah L., June",
+          "session": "Hannah L., June",
           "image_url": "media/portraits/39.jpg",
           "thumb_url": "media/portraits/t/39.jpg",
           "w": 1255,
@@ -1154,8 +1154,8 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Hannah L. — June",
-          "session": "Hannah L. — June",
+          "title": "Hannah L., June",
+          "session": "Hannah L., June",
           "image_url": "media/portraits/40.jpg",
           "thumb_url": "media/portraits/t/40.jpg",
           "w": 1422,
@@ -1170,7 +1170,9 @@ window.GALLERY = {
       "title": "Wanderings",
       "kind": "mixed",
       "layout": "grid",
-      "excerpt": [],
+      "excerpt": [
+        "Wanderings holds the ordinary, unplanned frames from daily life noticed in passing, not staged, not repeated."
+      ],
       "plates": [
         {
           "title": "A Moth To a Flame",
@@ -1709,11 +1711,467 @@ window.GALLERY = {
         "poster": "media/in-passing/09.jpg",
         "w": 1280,
         "h": 676
+      },
+      {
+        "title": "A Place To Rest My Mind",
+        "src": "media/in-passing/10.mp4",
+        "poster": "media/in-passing/10.jpg",
+        "w": 1280,
+        "h": 676
+      },
+      {
+        "title": "RGB - Sign Of The Times",
+        "src": "media/in-passing/11.mp4",
+        "poster": "media/in-passing/11.jpg",
+        "w": 1280,
+        "h": 676
       }
     ]
   },
   "ephemera": {
-    "headline": "Signage, artifacts, and printed matter collected alongside the main body of work — the smaller, stranger evidence of how faith shows up in daily life here.",
-    "plates": []
+    "headline": "Signage, artifacts, and printed matter collected alongside the main body of work: the smaller, stranger evidence of how faith shows up in daily life here.",
+    "plates": [
+      {
+        "title": "5 Steps To Salvation",
+        "session": null,
+        "image_url": "media/ephemera/01.jpg",
+        "thumb_url": "media/ephemera/t/01.jpg",
+        "w": 1985,
+        "h": 2000,
+        "shape": ""
+      },
+      {
+        "title": "All Of Them",
+        "session": null,
+        "image_url": "media/ephemera/02.jpg",
+        "thumb_url": "media/ephemera/t/02.jpg",
+        "w": 1645,
+        "h": 2000,
+        "shape": "tall"
+      },
+      {
+        "title": "Almost Invisible",
+        "session": null,
+        "image_url": "media/ephemera/03.jpg",
+        "thumb_url": "media/ephemera/t/03.jpg",
+        "w": 2000,
+        "h": 1500,
+        "shape": "wide"
+      },
+      {
+        "title": "Apocalypse, Blowout Included",
+        "session": null,
+        "image_url": "media/ephemera/04.jpg",
+        "thumb_url": "media/ephemera/t/04.jpg",
+        "w": 2000,
+        "h": 1940,
+        "shape": ""
+      },
+      {
+        "title": "Backup Cross",
+        "session": null,
+        "image_url": "media/ephemera/05.jpg",
+        "thumb_url": "media/ephemera/t/05.jpg",
+        "w": 1405,
+        "h": 2000,
+        "shape": "tall"
+      },
+      {
+        "title": "Can You Lead My Way",
+        "session": null,
+        "image_url": "media/ephemera/06.jpg",
+        "thumb_url": "media/ephemera/t/06.jpg",
+        "w": 1816,
+        "h": 2000,
+        "shape": ""
+      },
+      {
+        "title": "Chapter and Verse",
+        "session": null,
+        "image_url": "media/ephemera/07.jpg",
+        "thumb_url": "media/ephemera/t/07.jpg",
+        "w": 1500,
+        "h": 2000,
+        "shape": "tall"
+      },
+      {
+        "title": "Christians Love Vandalism Too!",
+        "session": null,
+        "image_url": "media/ephemera/08.jpg",
+        "thumb_url": "media/ephemera/t/08.jpg",
+        "w": 2000,
+        "h": 1500,
+        "shape": "wide"
+      },
+      {
+        "title": "Chuch - After Hours",
+        "session": null,
+        "image_url": "media/ephemera/09.jpg",
+        "thumb_url": "media/ephemera/t/09.jpg",
+        "w": 1672,
+        "h": 2000,
+        "shape": "tall"
+      },
+      {
+        "title": "Coffee and Cigs",
+        "session": null,
+        "image_url": "media/ephemera/10.jpg",
+        "thumb_url": "media/ephemera/t/10.jpg",
+        "w": 2000,
+        "h": 1500,
+        "shape": "wide"
+      },
+      {
+        "title": "Deck Testimony",
+        "session": null,
+        "image_url": "media/ephemera/11.jpg",
+        "thumb_url": "media/ephemera/t/11.jpg",
+        "w": 2000,
+        "h": 1500,
+        "shape": "wide"
+      },
+      {
+        "title": "Double Booking",
+        "session": null,
+        "image_url": "media/ephemera/12.jpg",
+        "thumb_url": "media/ephemera/t/12.jpg",
+        "w": 2000,
+        "h": 1500,
+        "shape": "wide"
+      },
+      {
+        "title": "Encore, Encore!",
+        "session": null,
+        "image_url": "media/ephemera/13.jpg",
+        "thumb_url": "media/ephemera/t/13.jpg",
+        "w": 1783,
+        "h": 2000,
+        "shape": ""
+      },
+      {
+        "title": "Essential Reading",
+        "session": null,
+        "image_url": "media/ephemera/14.jpg",
+        "thumb_url": "media/ephemera/t/14.jpg",
+        "w": 1699,
+        "h": 2000,
+        "shape": "tall"
+      },
+      {
+        "title": "Fan Club Theology",
+        "session": null,
+        "image_url": "media/ephemera/15.jpg",
+        "thumb_url": "media/ephemera/t/15.jpg",
+        "w": 1500,
+        "h": 2000,
+        "shape": "tall"
+      },
+      {
+        "title": "Festival Merch",
+        "session": null,
+        "image_url": "media/ephemera/16.jpg",
+        "thumb_url": "media/ephemera/t/16.jpg",
+        "w": 2000,
+        "h": 1500,
+        "shape": "wide"
+      },
+      {
+        "title": "Fine Print",
+        "session": null,
+        "image_url": "media/ephemera/17.jpg",
+        "thumb_url": "media/ephemera/t/17.jpg",
+        "w": 1925,
+        "h": 2000,
+        "shape": ""
+      },
+      {
+        "title": "Free Delivery",
+        "session": null,
+        "image_url": "media/ephemera/18.jpg",
+        "thumb_url": "media/ephemera/t/18.jpg",
+        "w": 2000,
+        "h": 1511,
+        "shape": "wide"
+      },
+      {
+        "title": "Household Passion",
+        "session": null,
+        "image_url": "media/ephemera/19.jpg",
+        "thumb_url": "media/ephemera/t/19.jpg",
+        "w": 2000,
+        "h": 1500,
+        "shape": "wide"
+      },
+      {
+        "title": "Jesus’ biggest fans",
+        "session": null,
+        "image_url": "media/ephemera/20.jpg",
+        "thumb_url": "media/ephemera/t/20.jpg",
+        "w": 1365,
+        "h": 2000,
+        "shape": "tall"
+      },
+      {
+        "title": "Kings Night",
+        "session": null,
+        "image_url": "media/ephemera/21.jpg",
+        "thumb_url": "media/ephemera/t/21.jpg",
+        "w": 2000,
+        "h": 1499,
+        "shape": "wide"
+      },
+      {
+        "title": "Lawn Sign Eschatology",
+        "session": null,
+        "image_url": "media/ephemera/22.jpg",
+        "thumb_url": "media/ephemera/t/22.jpg",
+        "w": 1375,
+        "h": 2000,
+        "shape": "tall"
+      },
+      {
+        "title": "Lookin for a smile",
+        "session": null,
+        "image_url": "media/ephemera/23.jpg",
+        "thumb_url": "media/ephemera/t/23.jpg",
+        "w": 2000,
+        "h": 1500,
+        "shape": "wide"
+      },
+      {
+        "title": "Monument, Overcast",
+        "session": null,
+        "image_url": "media/ephemera/24.jpg",
+        "thumb_url": "media/ephemera/t/24.jpg",
+        "w": 2000,
+        "h": 1500,
+        "shape": "wide"
+      },
+      {
+        "title": "Motion Blur Trinity",
+        "session": null,
+        "image_url": "media/ephemera/25.jpg",
+        "thumb_url": "media/ephemera/t/25.jpg",
+        "w": 1333,
+        "h": 2000,
+        "shape": "tall"
+      },
+      {
+        "title": "Nativity, Floodlit",
+        "session": null,
+        "image_url": "media/ephemera/26.jpg",
+        "thumb_url": "media/ephemera/t/26.jpg",
+        "w": 2000,
+        "h": 1331,
+        "shape": "wide"
+      },
+      {
+        "title": "No Better Way to Start Your Day",
+        "session": null,
+        "image_url": "media/ephemera/27.jpg",
+        "thumb_url": "media/ephemera/t/27.jpg",
+        "w": 1965,
+        "h": 2000,
+        "shape": ""
+      },
+      {
+        "title": "Our Lady of Impala",
+        "session": null,
+        "image_url": "media/ephemera/28.jpg",
+        "thumb_url": "media/ephemera/t/28.jpg",
+        "w": 2000,
+        "h": 1609,
+        "shape": "wide"
+      },
+      {
+        "title": "Palm Reading",
+        "session": null,
+        "image_url": "media/ephemera/29.jpg",
+        "thumb_url": "media/ephemera/t/29.jpg",
+        "w": 2000,
+        "h": 1500,
+        "shape": "wide"
+      },
+      {
+        "title": "Paved With Good Intentions",
+        "session": null,
+        "image_url": "media/ephemera/30.jpg",
+        "thumb_url": "media/ephemera/t/30.jpg",
+        "w": 2000,
+        "h": 1308,
+        "shape": "wide"
+      },
+      {
+        "title": "Payphone Gospel",
+        "session": null,
+        "image_url": "media/ephemera/31.jpg",
+        "thumb_url": "media/ephemera/t/31.jpg",
+        "w": 1575,
+        "h": 2000,
+        "shape": "tall"
+      },
+      {
+        "title": "Porch Light",
+        "session": null,
+        "image_url": "media/ephemera/32.jpg",
+        "thumb_url": "media/ephemera/t/32.jpg",
+        "w": 1500,
+        "h": 2000,
+        "shape": "tall"
+      },
+      {
+        "title": "Range Rules",
+        "session": null,
+        "image_url": "media/ephemera/33.jpg",
+        "thumb_url": "media/ephemera/t/33.jpg",
+        "w": 1638,
+        "h": 2000,
+        "shape": "tall"
+      },
+      {
+        "title": "Relax, Hell Does Not Exist Either",
+        "session": null,
+        "image_url": "media/ephemera/34.jpg",
+        "thumb_url": "media/ephemera/t/34.jpg",
+        "w": 2000,
+        "h": 1500,
+        "shape": "wide"
+      },
+      {
+        "title": "Retail Devotion",
+        "session": null,
+        "image_url": "media/ephemera/35.jpg",
+        "thumb_url": "media/ephemera/t/35.jpg",
+        "w": 1500,
+        "h": 2000,
+        "shape": "tall"
+      },
+      {
+        "title": "Rolling Salvation",
+        "session": null,
+        "image_url": "media/ephemera/36.jpg",
+        "thumb_url": "media/ephemera/t/36.jpg",
+        "w": 1500,
+        "h": 2000,
+        "shape": "tall"
+      },
+      {
+        "title": "Sidewalk Scripture",
+        "session": null,
+        "image_url": "media/ephemera/37.jpg",
+        "thumb_url": "media/ephemera/t/37.jpg",
+        "w": 2000,
+        "h": 1500,
+        "shape": "wide"
+      },
+      {
+        "title": "Stoaway",
+        "session": null,
+        "image_url": "media/ephemera/38.jpg",
+        "thumb_url": "media/ephemera/t/38.jpg",
+        "w": 1686,
+        "h": 2000,
+        "shape": "tall"
+      },
+      {
+        "title": "The Other Bumper",
+        "session": null,
+        "image_url": "media/ephemera/39.jpg",
+        "thumb_url": "media/ephemera/t/39.jpg",
+        "w": 2000,
+        "h": 1908,
+        "shape": ""
+      },
+      {
+        "title": "Times Square Sermon",
+        "session": null,
+        "image_url": "media/ephemera/40.jpg",
+        "thumb_url": "media/ephemera/t/40.jpg",
+        "w": 2000,
+        "h": 1500,
+        "shape": "wide"
+      },
+      {
+        "title": "Tracking Focus",
+        "session": null,
+        "image_url": "media/ephemera/41.jpg",
+        "thumb_url": "media/ephemera/t/41.jpg",
+        "w": 2000,
+        "h": 1500,
+        "shape": "wide"
+      },
+      {
+        "title": "Two Kinds of Salvation",
+        "session": null,
+        "image_url": "media/ephemera/42.jpg",
+        "thumb_url": "media/ephemera/t/42.jpg",
+        "w": 1333,
+        "h": 2000,
+        "shape": "tall"
+      },
+      {
+        "title": "Two-for-One Crucifixion",
+        "session": null,
+        "image_url": "media/ephemera/43.jpg",
+        "thumb_url": "media/ephemera/t/43.jpg",
+        "w": 1771,
+        "h": 2000,
+        "shape": ""
+      },
+      {
+        "title": "Uni - Wall Décor, Civic Edition",
+        "session": null,
+        "image_url": "media/ephemera/44.jpg",
+        "thumb_url": "media/ephemera/t/44.jpg",
+        "w": 2000,
+        "h": 1500,
+        "shape": "wide"
+      },
+      {
+        "title": "Vacancy, Blessed",
+        "session": null,
+        "image_url": "media/ephemera/45.jpg",
+        "thumb_url": "media/ephemera/t/45.jpg",
+        "w": 1541,
+        "h": 2000,
+        "shape": "tall"
+      },
+      {
+        "title": "Vacancy, Redeemed",
+        "session": null,
+        "image_url": "media/ephemera/46.jpg",
+        "thumb_url": "media/ephemera/t/46.jpg",
+        "w": 2000,
+        "h": 1587,
+        "shape": "wide"
+      },
+      {
+        "title": "Vanity, Sanctified",
+        "session": null,
+        "image_url": "media/ephemera/47.jpg",
+        "thumb_url": "media/ephemera/t/47.jpg",
+        "w": 2000,
+        "h": 1686,
+        "shape": "wide"
+      },
+      {
+        "title": "What Really Happened in the Garden of Eden",
+        "session": null,
+        "image_url": "media/ephemera/48.jpg",
+        "thumb_url": "media/ephemera/t/48.jpg",
+        "w": 2000,
+        "h": 1500,
+        "shape": "wide"
+      },
+      {
+        "title": "Windshield Ministry",
+        "session": null,
+        "image_url": "media/ephemera/49.jpg",
+        "thumb_url": "media/ephemera/t/49.jpg",
+        "w": 1500,
+        "h": 2000,
+        "shape": "tall"
+      }
+    ]
   }
 };
