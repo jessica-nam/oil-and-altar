@@ -16,7 +16,7 @@
   --col: 41%;            /* where the content column starts */
   --edge: 20px;
   --prose: 15px;
-  --caption: 15px;       /* photo captions — sized to read as titles, not watermarks */
+  --caption: 16px;       /* photo captions — sized to read as titles, not watermarks */
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
