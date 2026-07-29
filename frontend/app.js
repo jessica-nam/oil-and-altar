@@ -22,12 +22,10 @@
   /* Carousel timing — per Bren's spec: 1.5s per slide */
   var DWELL = 1500;
 
-  /* Contact form posts to Formspree (static-friendly, no backend). Paste the
-   * form's endpoint from the Formspree dashboard (Forms → your form → its URL,
-   * e.g. "https://formspree.io/f/abcdwxyz"). This ID is public and safe to
-   * commit — it is NOT a password. Until it's set, the form falls back to a
-   * pre-filled email. */
-  var FORMSPREE_ENDPOINT = "https://formspree.io/f/REPLACE_WITH_FORM_ID";
+  /* Contact form posts to Formspree (static-friendly, no backend). This form
+   * ID is public and safe to commit — it is NOT a password. To change forms,
+   * swap the ID from the Formspree dashboard (Forms → your form → its URL). */
+  var FORMSPREE_ENDPOINT = "https://formspree.io/f/xkodydzp";
 
   /* ---------- seeded PRNG so placeholders render identically every load ---------- */
   function prng(seed) {
@@ -604,6 +602,9 @@
       "    <label><span>NAME</span><input name=\"name\" type=\"text\" required maxlength=\"200\" autocomplete=\"name\" /></label>" +
       "    <label><span>EMAIL</span><input name=\"email\" type=\"email\" required autocomplete=\"email\" /></label>" +
       "    <label><span>MESSAGE</span><textarea name=\"message\" rows=\"5\" required maxlength=\"5000\"></textarea></label>" +
+      // Formspree config: subject line on the notification email + spam honeypot.
+      '    <input type="hidden" name="_subject" value="New inquiry from oilandaltar.com" />' +
+      '    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px" />' +
       "    <button type=\"submit\">Send</button>" +
       '    <p id="form-status" role="status"></p>' +
       "  </form>" +
@@ -612,28 +613,23 @@
     var form = document.getElementById("inquiry-form");
     var status = document.getElementById("form-status");
 
-    // Fallback for before the Formspree endpoint is filled in: pre-fill an email.
-    function mailtoFallback(name, email, message) {
-      var subject = "Oil & Altar inquiry from " + name;
-      var body = "Name: " + name + "\nEmail: " + email + "\n\n" + message;
-      window.location.href = "mailto:Brenden.cavazos@gmail.com" +
-        "?subject=" + encodeURIComponent(subject) +
-        "&body=" + encodeURIComponent(body);
+    function fail(res) {
+      status.classList.add("error");
+      // Surface a Formspree validation message when there is one; else point to email.
+      var generic = "Couldn’t send — email Brenden.cavazos@gmail.com instead.";
+      if (!res || !res.json) { status.textContent = generic; return; }
+      res.json().then(function (data) {
+        var errs = data && data.errors;
+        status.textContent = errs && errs.length
+          ? errs.map(function (x) { return x.message; }).join(" ")
+          : generic;
+      }).catch(function () { status.textContent = generic; });
     }
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!form.reportValidity()) return;
-      var name = form.elements.name.value.trim();
-      var email = form.elements.email.value.trim();
-      var message = form.elements.message.value.trim();
       status.classList.remove("error");
-
-      if (FORMSPREE_ENDPOINT.indexOf("REPLACE_WITH_FORM_ID") !== -1) {
-        status.textContent = "Opening your email app…";
-        return mailtoFallback(name, email, message);
-      }
-
       status.textContent = "Sending…";
       fetch(FORMSPREE_ENDPOINT, {
         method: "POST",
@@ -645,13 +641,10 @@
             form.reset();
             status.textContent = "Thank you — your message is on its way.";
           } else {
-            throw new Error("HTTP " + res.status);
+            fail(res);
           }
         })
-        .catch(function () {
-          status.classList.add("error");
-          status.textContent = "Couldn’t send — email Brenden.cavazos@gmail.com instead.";
-        });
+        .catch(function () { fail(null); });
     });
   }
 
