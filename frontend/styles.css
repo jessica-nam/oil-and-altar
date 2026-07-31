@@ -273,16 +273,18 @@ main {
 
 /* ---------- about ---------- */
 
-.about { max-width: 560px; }
+.about { max-width: 660px; }
 
-/* portrait + name share a row on desktop; portrait stacks on top on mobile.
+/* portrait + name/lede share a row on desktop (name top-aligned with the
+ * frame, first bio graf under it); the rest of the bio flows below the
+ * photo at full column width. Portrait stacks on top on mobile.
  * The photo is treated exactly like a gallery frame: full-bleed rectangle,
  * b&w, no radius/shadow — only a hairline to lift it off the white page. */
 .about-head {
   display: flex;
-  align-items: flex-end;
-  gap: 28px;
-  margin-bottom: 30px;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 26px;
 }
 .about-portrait {
   flex: 0 0 auto;
@@ -297,14 +299,20 @@ main {
   filter: grayscale(100%) contrast(1.05);
   border: 1px solid var(--rule);
 }
+.about-lede { flex: 1; min-width: 0; }
+.about-lede p {
+  font-size: var(--prose);
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
 
 .about-name {
-  font-size: 30px;
-  line-height: 1.15;
+  font-size: 26px;
+  line-height: 1.2;
   letter-spacing: -0.01em;
-  margin-bottom: 30px;
+  margin: 2px 0 16px;
 }
-.about-head .about-name { margin-bottom: 6px; }
 .about-name span { color: var(--mute); font-weight: 400; }
 
 .about .bio p,

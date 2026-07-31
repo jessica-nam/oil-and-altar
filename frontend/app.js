@@ -597,10 +597,12 @@
       '    <figure class="about-portrait">' +
       '      <img src="media/about/portrait.jpg" alt="Brenden Cavazos" width="606" height="900" />' +
       '    </figure>' +
-      '    <h1 class="about-name">Brenden Cavazos <span>| oilandaltar</span></h1>' +
+      '    <div class="about-lede">' +
+      '      <h1 class="about-name">Brenden Cavazos <span>| oilandaltar</span></h1>' +
+      '      <p>Texas Panhandle native and traveling documentary photographer working in night photography, portraiture, and urban exploration, centered on gothic architecture and the American Bible Belt.</p>' +
+      '    </div>' +
       '  </div>' +
       '  <div class="bio">' +
-      '    <p>Texas Panhandle native and traveling documentary photographer working in night photography, portraiture, and urban exploration, centered on gothic architecture and the American Bible Belt.</p>' +
       '    <p>Background in content strategy, analytics, supply chain and merchandising at Fortune 1 scale. Fluent in both the creative and operational sides of building a body of work and getting it seen.</p>' +
       '  </div>' +
       '  <h2 class="about-sub"><span class="kicker-numeral">01</span>What Oil and Altar is</h2>' +
