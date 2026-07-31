@@ -113,6 +113,23 @@ def source_images(folder: str) -> list[Path]:
     return sorted(files, key=natural_key)
 
 
+def ensure_index_sync(slug: str, srcs: list[Path]) -> None:
+    """Exports are named by list position (NN.jpg), so an insert/rename that
+    shifts the order would silently pair old exports with new titles. Keep a
+    manifest of the ordered source names; when it changes, wipe the series
+    folder so every index is re-exported from the right source."""
+    manifest = MEDIA / slug / ".sources"
+    current = "\n".join(p.name for p in srcs)
+    if manifest.exists() and manifest.read_text(encoding="utf-8") == current:
+        return
+    if (MEDIA / slug).exists():
+        if manifest.exists():
+            print(f"    · source list changed — rebuilding {slug} exports")
+        shutil.rmtree(MEDIA / slug)
+    (MEDIA / slug).mkdir(parents=True, exist_ok=True)
+    manifest.write_text(current, encoding="utf-8")
+
+
 def dedup(paths: list[Path]) -> list[Path]:
     """Drop byte-identical duplicates (e.g. trailing-space filename twins), keep order."""
     seen: set[int] = set()
@@ -206,6 +223,7 @@ def build_untitled(slug: str, folder: str) -> list[dict]:
     """Sequential 'Untitled 0X' captions in natural filename order."""
     print(f"[{slug}] {folder}")
     imgs = dedup(source_images(folder))
+    ensure_index_sync(slug, imgs)
     plates = []
     for i, src in enumerate(imgs, start=1):
         plates.append(
@@ -219,6 +237,7 @@ def build_titled(slug: str, folder: str) -> list[dict]:
     """Caption = cleaned filename (Wanderings)."""
     print(f"[{slug}] {folder}")
     imgs = dedup(source_images(folder))
+    ensure_index_sync(slug, imgs)
     plates = []
     for i, src in enumerate(imgs, start=1):
         plates.append(
@@ -263,6 +282,7 @@ SESSION_YEARS = {
     "Hannah L. - June": 2026,
     "Elena R. - June": 2026,
     "Dani And Flavie - June": 2026,
+    "Hannah L. - July": 2026,  # EXIF: shot 2026-07-23
 }
 
 
@@ -292,6 +312,7 @@ def build_portraits(slug: str, folder: str) -> list[dict]:
     ordered = sorted(
         groups, key=lambda k: (SESSION_YEARS.get(k, 9999), month_rank(k), k.lower())
     )
+    ensure_index_sync(slug, [p for key in ordered for p in groups[key]])
 
     plates: list[dict] = []
     i = 0
@@ -317,6 +338,7 @@ def build_portraits(slug: str, folder: str) -> list[dict]:
 def build_carousel(folder: str) -> list[dict]:
     print(f"[carousel] {folder}")
     imgs = dedup(source_images(folder))
+    ensure_index_sync("carousel", imgs)
     slides = []
     for i, src in enumerate(imgs, start=1):
         info = process_image(src, "carousel", i)

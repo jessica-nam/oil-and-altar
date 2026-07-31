@@ -9,7 +9,7 @@
   --ink-soft: #2e2e2e;   /* long-form prose */
   --mute: #8b8b8b;       /* secondary text */
   --eyebrow-ink: #444;   /* eyebrow/section-label text */
-  --caption-ink: #6b6b6b; /* photo captions — darker so they read as titles */
+  --caption-ink: #111111; /* photo/video titles — near-black, one color site-wide */
   --hairline: #e4e4e4;
   --rule: #eee;          /* eyebrow underline */
   --accent: #c89b5c;     /* amber/gold, sampled from the tungsten range in the work */
@@ -191,6 +191,7 @@ main {
   font-style: italic;
   font-size: 24px;
   font-weight: 600;
+  color: var(--caption-ink);
   border-top: 1px solid var(--ink);
   padding-top: 12px;
   margin: 64px 0 18px;

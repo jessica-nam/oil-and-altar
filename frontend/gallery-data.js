@@ -789,6 +789,24 @@ window.GALLERY = {
           "w": 1595,
           "h": 2000,
           "shape": "tall"
+        },
+        {
+          "title": "Untitled 41",
+          "session": null,
+          "image_url": "media/abandoned-america/41.jpg",
+          "thumb_url": "media/abandoned-america/t/41.jpg",
+          "w": 1358,
+          "h": 2000,
+          "shape": "tall"
+        },
+        {
+          "title": "Untitled 42",
+          "session": null,
+          "image_url": "media/abandoned-america/42.jpg",
+          "thumb_url": "media/abandoned-america/t/42.jpg",
+          "w": 1549,
+          "h": 2000,
+          "shape": "tall"
         }
       ]
     },
@@ -1161,6 +1179,33 @@ window.GALLERY = {
           "w": 1422,
           "h": 2000,
           "shape": "tall"
+        },
+        {
+          "title": "Hannah L. · July 2026",
+          "session": "Hannah L. · July 2026",
+          "image_url": "media/portraits/41.jpg",
+          "thumb_url": "media/portraits/t/41.jpg",
+          "w": 1333,
+          "h": 2000,
+          "shape": "tall"
+        },
+        {
+          "title": "Hannah L. · July 2026",
+          "session": "Hannah L. · July 2026",
+          "image_url": "media/portraits/42.jpg",
+          "thumb_url": "media/portraits/t/42.jpg",
+          "w": 1333,
+          "h": 2000,
+          "shape": "tall"
+        },
+        {
+          "title": "Hannah L. · July 2026",
+          "session": "Hannah L. · July 2026",
+          "image_url": "media/portraits/43.jpg",
+          "thumb_url": "media/portraits/t/43.jpg",
+          "w": 1333,
+          "h": 2000,
+          "shape": "tall"
         }
       ]
     },
@@ -1436,10 +1481,19 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Meet Me At The Altar",
+          "title": "Loving Life Again",
           "session": null,
           "image_url": "media/wanderings/30.jpg",
           "thumb_url": "media/wanderings/t/30.jpg",
+          "w": 2000,
+          "h": 1333,
+          "shape": "wide"
+        },
+        {
+          "title": "Meet Me At The Altar",
+          "session": null,
+          "image_url": "media/wanderings/31.jpg",
+          "thumb_url": "media/wanderings/t/31.jpg",
           "w": 1420,
           "h": 2000,
           "shape": "tall"
@@ -1447,8 +1501,8 @@ window.GALLERY = {
         {
           "title": "Party Rocker",
           "session": null,
-          "image_url": "media/wanderings/31.jpg",
-          "thumb_url": "media/wanderings/t/31.jpg",
+          "image_url": "media/wanderings/32.jpg",
+          "thumb_url": "media/wanderings/t/32.jpg",
           "w": 2000,
           "h": 1333,
           "shape": "wide"
@@ -1456,17 +1510,26 @@ window.GALLERY = {
         {
           "title": "Reds and Blues Tonight",
           "session": null,
-          "image_url": "media/wanderings/32.jpg",
-          "thumb_url": "media/wanderings/t/32.jpg",
+          "image_url": "media/wanderings/33.jpg",
+          "thumb_url": "media/wanderings/t/33.jpg",
           "w": 1684,
+          "h": 2000,
+          "shape": "tall"
+        },
+        {
+          "title": "RGB",
+          "session": null,
+          "image_url": "media/wanderings/34.jpg",
+          "thumb_url": "media/wanderings/t/34.jpg",
+          "w": 1333,
           "h": 2000,
           "shape": "tall"
         },
         {
           "title": "Sodium Lights and Crushed Shadows",
           "session": null,
-          "image_url": "media/wanderings/33.jpg",
-          "thumb_url": "media/wanderings/t/33.jpg",
+          "image_url": "media/wanderings/35.jpg",
+          "thumb_url": "media/wanderings/t/35.jpg",
           "w": 2000,
           "h": 1327,
           "shape": "wide"
@@ -1474,8 +1537,8 @@ window.GALLERY = {
         {
           "title": "Solar Panels",
           "session": null,
-          "image_url": "media/wanderings/34.jpg",
-          "thumb_url": "media/wanderings/t/34.jpg",
+          "image_url": "media/wanderings/36.jpg",
+          "thumb_url": "media/wanderings/t/36.jpg",
           "w": 1406,
           "h": 2000,
           "shape": "tall"
@@ -1483,8 +1546,8 @@ window.GALLERY = {
         {
           "title": "Supercar In Texas",
           "session": null,
-          "image_url": "media/wanderings/35.jpg",
-          "thumb_url": "media/wanderings/t/35.jpg",
+          "image_url": "media/wanderings/37.jpg",
+          "thumb_url": "media/wanderings/t/37.jpg",
           "w": 2000,
           "h": 1500,
           "shape": "wide"
@@ -1492,8 +1555,8 @@ window.GALLERY = {
         {
           "title": "The Eyes That Glow",
           "session": null,
-          "image_url": "media/wanderings/36.jpg",
-          "thumb_url": "media/wanderings/t/36.jpg",
+          "image_url": "media/wanderings/38.jpg",
+          "thumb_url": "media/wanderings/t/38.jpg",
           "w": 1255,
           "h": 2000,
           "shape": "tall"
@@ -1501,8 +1564,8 @@ window.GALLERY = {
         {
           "title": "The Hills Have Eyes",
           "session": null,
-          "image_url": "media/wanderings/37.jpg",
-          "thumb_url": "media/wanderings/t/37.jpg",
+          "image_url": "media/wanderings/39.jpg",
+          "thumb_url": "media/wanderings/t/39.jpg",
           "w": 1945,
           "h": 2000,
           "shape": ""
@@ -1510,8 +1573,8 @@ window.GALLERY = {
         {
           "title": "The Three Wise Men",
           "session": null,
-          "image_url": "media/wanderings/38.jpg",
-          "thumb_url": "media/wanderings/t/38.jpg",
+          "image_url": "media/wanderings/40.jpg",
+          "thumb_url": "media/wanderings/t/40.jpg",
           "w": 1214,
           "h": 2000,
           "shape": "tall"
@@ -1519,17 +1582,26 @@ window.GALLERY = {
         {
           "title": "This Is My Silent Hill",
           "session": null,
-          "image_url": "media/wanderings/39.jpg",
-          "thumb_url": "media/wanderings/t/39.jpg",
+          "image_url": "media/wanderings/41.jpg",
+          "thumb_url": "media/wanderings/t/41.jpg",
           "w": 1333,
+          "h": 2000,
+          "shape": "tall"
+        },
+        {
+          "title": "Under The Moonlight",
+          "session": null,
+          "image_url": "media/wanderings/42.jpg",
+          "thumb_url": "media/wanderings/t/42.jpg",
+          "w": 1561,
           "h": 2000,
           "shape": "tall"
         },
         {
           "title": "Used and Abused",
           "session": null,
-          "image_url": "media/wanderings/40.jpg",
-          "thumb_url": "media/wanderings/t/40.jpg",
+          "image_url": "media/wanderings/43.jpg",
+          "thumb_url": "media/wanderings/t/43.jpg",
           "w": 1565,
           "h": 2000,
           "shape": "tall"
