@@ -273,7 +273,7 @@ main {
 
 /* ---------- about ---------- */
 
-.about { max-width: 660px; }
+.about { max-width: 780px; }
 
 /* portrait + name/lede share a row on desktop (name top-aligned with the
  * frame, first bio graf under it); the rest of the bio flows below the
@@ -291,10 +291,10 @@ main {
 }
 .about-portrait img {
   display: block;
-  width: 220px;
-  height: 280px;
+  /* scales with the window like the mock: ~16vw, natural (uncropped) ratio */
+  width: clamp(180px, 16vw, 280px);
+  height: auto;
   max-width: 100%;
-  object-fit: cover;
   border-radius: 0;
   filter: grayscale(100%) contrast(1.05);
   border: 1px solid var(--rule);
