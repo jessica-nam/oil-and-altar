@@ -189,7 +189,7 @@ def process_image(src: Path, slug: str, i: int) -> dict:
 def clean_title(name: str) -> str:
     """Filename -> display title. '_' stands in for an apostrophe/quote in the drop."""
     t = Path(name).stem.strip()
-    t = re.sub(r"_([^_]+)_", r"‘\1’", t)  # _Alice_ -> ‘Alice’
+    t = re.sub(r"_([^_]+)_", r"\1", t)  # _Alice_ -> Alice (titles carry no quotes)
     t = t.rstrip("_")  # 'Used and Abused_' -> 'Used and Abused'
     t = t.replace("_", "’")  # Don_t -> Don’t
     return re.sub(r"\s+", " ", t).strip()

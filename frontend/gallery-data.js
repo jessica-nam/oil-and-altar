@@ -1355,7 +1355,7 @@ window.GALLERY = {
           "shape": "tall"
         },
         {
-          "title": "Her Name Is ‘Alice’",
+          "title": "Her Name Is Alice",
           "session": null,
           "image_url": "media/wanderings/21.jpg",
           "thumb_url": "media/wanderings/t/21.jpg",
