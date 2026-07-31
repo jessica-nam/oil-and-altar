@@ -248,6 +248,24 @@ MONTHS = {
 }
 
 
+# Shoot year per session. Filenames only carry the month, so years come from
+# file metadata (kMDItemContentCreationDate on the drops) — NOT guessed from
+# today's date. Sessions missing here render without a year and print a
+# warning so they get confirmed with Brenden before publishing.
+SESSION_YEARS = {
+    "Paul S. - February": 2025,  # edits dated Mar 2025 — the one pre-2026 shoot
+    "Brooke N. - March": 2026,
+    "Hannah L. - March": 2026,
+    "Pranav N. - April": 2026,  # PNG exports carry no EXIF; year per Brenden's drop
+    "Hannah L. - April": 2026,
+    "Manny U. - May": 2026,
+    "Diego and Isaac - May": 2026,
+    "Hannah L. - June": 2026,
+    "Elena R. - June": 2026,
+    "Dani And Flavie - June": 2026,
+}
+
+
 def session_of(path: Path) -> str:
     """Derive 'Name - Month' session key from a portrait filename."""
     stem = path.stem
@@ -259,7 +277,7 @@ def session_of(path: Path) -> str:
 
 
 def build_portraits(slug: str, folder: str) -> list[dict]:
-    """Group by session; each plate carries its session header, sessions ordered by month."""
+    """Group by session; each plate carries its session header, sessions in shoot order."""
     print(f"[{slug}] {folder}")
     imgs = dedup(source_images(folder))
 
@@ -271,12 +289,22 @@ def build_portraits(slug: str, folder: str) -> list[dict]:
         m = re.search(r"-\s*([A-Za-z]+)", key)
         return MONTHS.get(m.group(1).lower(), 99) if m else 99
 
-    ordered = sorted(groups, key=lambda k: (month_rank(k), k.lower()))
+    ordered = sorted(
+        groups, key=lambda k: (SESSION_YEARS.get(k, 9999), month_rank(k), k.lower())
+    )
 
     plates: list[dict] = []
     i = 0
     for key in ordered:
-        header = key.replace(" - ", ", ")  # "Brooke N. - March" -> "Brooke N., March"
+        # "Brooke N. - March" -> "Brooke N. · March 2026"
+        header = key.replace(" - ", " · ")
+        year = SESSION_YEARS.get(key)
+        if year is None:
+            print(
+                f"    !! no shoot year on record for '{key}' — confirm before publishing"
+            )
+        else:
+            header = f"{header} {year}"
         for src in groups[key]:
             i += 1
             plates.append(

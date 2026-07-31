@@ -448,7 +448,7 @@
     fig.appendChild(mediaFor(plate, kind, layout));
     if (caption) {
       var cap = document.createElement("figcaption");
-      cap.textContent = "‘" + plate.title + "’";
+      cap.textContent = plate.title;
       fig.appendChild(cap);
     }
     host.appendChild(fig);
@@ -538,7 +538,7 @@
 
       wrap.appendChild(bay);
       var cap = document.createElement("figcaption");
-      cap.textContent = "‘" + clip.title + "’";
+      cap.textContent = clip.title;
       wrap.appendChild(cap);
       view.appendChild(wrap);
     });
@@ -593,16 +593,21 @@
   function renderAbout() {
     view.innerHTML =
       '<div class="about">' +
-      '  <h1 class="about-name">Brenden Cavazos <span>| oilandaltar</span></h1>' +
+      '  <div class="about-head">' +
+      '    <figure class="about-portrait">' +
+      '      <img src="media/about/portrait.jpg" alt="Brenden Cavazos" width="606" height="900" />' +
+      '    </figure>' +
+      '    <h1 class="about-name">Brenden Cavazos <span>| oilandaltar</span></h1>' +
+      '  </div>' +
       '  <div class="bio">' +
       '    <p>Texas Panhandle native and traveling documentary photographer working in night photography, portraiture, and urban exploration, centered on gothic architecture and the American Bible Belt.</p>' +
       '    <p>Background in content strategy, analytics, supply chain and merchandising at Fortune 1 scale. Fluent in both the creative and operational sides of building a body of work and getting it seen.</p>' +
       '  </div>' +
-      '  <h2 class="about-sub">What Oil and Altar is</h2>' +
+      '  <h2 class="about-sub"><span class="kicker-numeral">01</span>What Oil and Altar is</h2>' +
       '  <p class="about-statement">Oil and Altar takes its name from the two things sitting at the center of the work: oil, the grit, grain, and rust of a place left to weather on its own while altar, is the sacred spaces built to hold belief in a region defined by it. The project moves between the two without resolving the tension: churches lit against the dark, roadside signage preaching salvation next to buildings falling into ruin, portraits held in the same exposure stillness as an abandoned house. It’s an ongoing documentary practice, not a single series, a way of looking at the American South that treats decay and devotion as part of the same picture, and leaves the interpretation to whoever’s looking.</p>' +
-      '  <h2 class="about-sub">Education</h2>' +
+      '  <h2 class="about-sub"><span class="kicker-numeral">02</span>Education</h2>' +
       '  <p class="about-edu">Bachelor of Science in Digital Marketing, Purdue University, 2023</p>' +
-      '  <h2 class="about-sub">Contact</h2>' +
+      '  <h2 class="about-sub"><span class="kicker-numeral">03</span>Contact</h2>' +
       '  <ul class="about-contact">' +
       '    <li><a href="mailto:Brenden.cavazos@gmail.com">Brenden.cavazos@gmail.com</a></li>' +
       '    <li><a href="https://www.instagram.com/oilandaltar/" rel="noopener" target="_blank">instagram.com/oilandaltar</a></li>' +
